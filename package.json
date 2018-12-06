@@ -1,0 +1,36 @@
+{
+  "name": "@xg4/text2image",
+  "version": "0.0.3",
+  "description": "change text to image by canvas",
+  "main": "dist/index.min.js",
+  "author": "xg4 <xingor4@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "keywords": [
+    "text",
+    "image",
+    "canvas",
+    "URL"
+  ],
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xg4/text2image.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xg4/text2image/issues"
+  },
+  "homepage": "https://github.com/xg4/text2image#readme",
+  "devDependencies": {
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/preset-env": "^7.2.0",
+    "rollup": "^0.67.4",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-uglify": "^6.0.0"
+  }
+}
