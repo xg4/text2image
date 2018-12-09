@@ -1,2 +1,2 @@
-import { default as isObj } from './isObj'
-import { default as isSrc } from './isSrc'
+export { default as isObj } from './isObj'
+export { default as isSrc } from './isSrc'

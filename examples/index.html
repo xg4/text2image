@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Text2Image</title>
+    <style>
+      img[src^='data'] {
+        border: 1px solid #f00;
+      }
+      img[src^='blob'] {
+        border: 1px solid #0f0;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      文字内容：<input type="text" /> <br />
+      文字大小：<input type="range" value="10" /> <br />
+      文字颜色：<input type="color" value="#000000" /> <br />
+      水印图片：<input type="file" /><br />
+      <button>生成</button>
+    </div>
+
+    <script src="../dist/index.min.js"></script>
+
+    <script>
+      var text = document.querySelector('input[type=text]')
+      var fontSize = document.querySelector('input[type=range]')
+      var color = document.querySelector('input[type=color]')
+
+      var ti = new TextImage({
+        text: text.value,
+        fontSize: fontSize.value,
+        color: color.value
+      })
+
+      var btn = document.querySelector('button')
+      btn.addEventListener('click', function() {
+        ti.createURL({
+          text: text.value,
+          fontSize: fontSize.value,
+          color: color.value
+        }).then(function(url) {
+          var img = new Image()
+          img.src = url
+          document.body.appendChild(img)
+        })
+
+        var dataImg = new Image()
+        dataImg.src = ti.toDataURL({
+          text: text.value,
+          fontSize: fontSize.value,
+          color: color.value
+        })
+        document.body.appendChild(dataImg)
+      })
+
+      var img = document.querySelector('input[type=file]')
+      img.addEventListener('change', function() {
+        btn.disabled = true
+        var reader = new FileReader()
+        reader.readAsDataURL(img.files[0])
+        reader.onload = function() {
+          ti.setImage(reader.result).then(function() {
+            btn.disabled = false
+          })
+        }
+      })
+    </script>
+  </body>
+</html>

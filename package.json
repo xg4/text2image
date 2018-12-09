@@ -6,6 +6,7 @@
   "author": "xg4 <xingor4@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "dev": "rollup -c -w",
     "build": "rollup -c",
     "release": "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },

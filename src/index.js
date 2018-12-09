@@ -1,5 +1,5 @@
 import './polyfill'
-import { isObj, isSrc } from './utils'
+import { isObj, isSrc } from './utils/index'
 
 /**
  * @description convert text to image by canvas
@@ -23,12 +23,14 @@ export default class TextImage {
   static defaultOptions = {
     fontSize: 30,
     color: '#000',
-    fontFamily: 'Arial',
-    fontWeight: 'bold'
+    fontFamily: 'arial',
+    fontWeight: 'normal',
+    type: 'image/png',
+    quality: 0.92
   }
 
   static currentOptions = {
-    ...this.defaultOptions
+    ...TextImage.defaultOptions
   }
 
   constructor(options = {}) {
@@ -41,8 +43,8 @@ export default class TextImage {
     }
   }
 
-  _parseOptions(value) {
-    return isObj(value) ? value : { value }
+  _parseOptions(text) {
+    return isObj(text) ? text : { text }
   }
 
   get width() {
@@ -83,44 +85,48 @@ export default class TextImage {
 
   _drawText() {
     this.ctx.save()
-    this.ctx.fillStyle = this.color
+    this.ctx.fillStyle = this.options.color
     this.ctx.font = this.font
     this.ctx.textBaseline = 'hanging'
-    this.ctx.fillText(this.options.value, 0, 0)
+    this.ctx.fillText(this.options.text, 0, 0)
     this.ctx.restore()
   }
 
-  _reset() {
+  _getTextWidth() {
+    this.ctx.save()
+    this.ctx.font = this.font
+    const width = this.ctx.measureText(this.options.text).width
+    this.ctx.restore()
+    return width
+  }
+
+  _draw() {
     // clear
     this.ctx.clearRect(0, 0, this.width, this.height)
 
     // computed image width/height
     this.height = this.options.fontSize
+    this.width = this._getTextWidth()
 
-    this.ctx.save()
-    this.ctx.font = this.font
-    this.width = this.ctx.measureText(this.options.value).width
-    this.ctx.restore()
-
+    // draw
     this._drawImage()
+    this._drawText()
   }
 
   setImage(imgUrl) {
-    if (!imgUrl) {
-      this.image = null
-      this.imageUrl = null
-      return
-    }
-
-    if (!isSrc(imgUrl)) {
-      this.image = null
-      this.imageUrl = null
-      return
-    }
-
-    if (this.imageUrl === imgUrl) return
-
     return new Promise((resolve, reject) => {
+      if (!isSrc(imgUrl)) {
+        this.image = null
+        this.imageUrl = null
+        resolve()
+        return
+      }
+
+      if (this.imageUrl === imgUrl) {
+        resolve()
+        return
+      }
+
       const img = new Image()
       img.onload = () => {
         this.image = img
@@ -132,24 +138,32 @@ export default class TextImage {
     })
   }
 
-  create(value, options = {}) {
-    return new Promise((resolve, reject) => {
-      Object.assign(this.options, options, this._parseOptions(value))
+  toDataURL(text) {
+    Object.assign(this.options, this._parseOptions(text))
 
-      this._reset()
-      // draw
-      this._drawText()
+    this._draw()
+    return this.c.toDataURL(this.options.type, this.options.quality)
+  }
 
-      // export
-      this.c.toBlob(blob => {
-        resolve(window.URL.createObjectURL(blob))
-      }, 'image/png')
+  createURL(text) {
+    return new Promise(resolve => {
+      Object.assign(this.options, this._parseOptions(text))
+
+      this._draw()
+
+      this.c.toBlob(
+        blob => {
+          resolve(URL.createObjectURL(blob))
+        },
+        this.options.type,
+        this.options.quality
+      )
     })
   }
 
-  destroy(url) {
+  destroyURL(url) {
     if (/^blob:/.test(url)) {
-      window.URL.revokeObjectURL(url)
+      URL.revokeObjectURL(url)
     }
   }
 }
