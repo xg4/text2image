@@ -1,16 +1,18 @@
 {
   "name": "@xg4/text2image",
   "version": "0.0.3",
-  "description": "change text to image by canvas",
+  "description": "convert text to image by canvas",
   "main": "dist/index.min.js",
   "author": "xg4 <xingor4@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "release": "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "keywords": [
     "text",
     "image",
+    "convert",
     "canvas",
     "URL"
   ],

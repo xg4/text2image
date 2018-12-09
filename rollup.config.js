@@ -3,13 +3,13 @@ import { uglify } from 'rollup-plugin-uglify'
 import pkg from './package.json'
 
 export default {
-  input: './src/index.js',
+  input: 'src/index.js',
   output: {
     file: pkg.main,
     format: 'umd',
-    name: 'XTextImage',
+    name: 'TextImage',
     globals: {
-      XTextImage: 'XTextImage'
+      XTextImage: 'TextImage'
     }
   },
   plugins: [

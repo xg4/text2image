@@ -1,7 +1,10 @@
+import './polyfill'
+import { isObj, isSrc } from './utils'
+
 /**
- * @description change text to image by canvas
+ * @description convert text to image by canvas
  */
-export default class XTextImage {
+export default class TextImage {
   static new(...args) {
     if (!this.instance) {
       this.instance = new this(...args)
@@ -9,43 +12,37 @@ export default class XTextImage {
     return this.instance
   }
 
+  static setDefaultOptions(options) {
+    Object.assign(currentOptions, options)
+  }
+
+  static resetDefaultOptions() {
+    this.currentOptions = { ...this.defaultOptions }
+  }
+
+  static defaultOptions = {
+    fontSize: 30,
+    color: '#000',
+    fontFamily: 'Arial',
+    fontWeight: 'bold'
+  }
+
+  static currentOptions = {
+    ...this.defaultOptions
+  }
+
   constructor(options = {}) {
     this.c = document.createElement('canvas')
     this.ctx = this.c.getContext('2d')
 
-    this._init(options)
-  }
-
-  _init({
-    fontSize = 30,
-    color = '#000',
-    fontFamily = 'Arial',
-    fontWeight = 'bold'
-  }) {
-    this.height = fontSize
-    this.color = color
-    this.fontFamily = fontFamily
-    this.fontWeight = fontWeight
-  }
-
-  setMarkImage(imgUrl) {
-    if (!imgUrl) {
-      this.mark = null
-      this.markUrl = null
-      return
+    this.options = {
+      ...TextImage.currentOptions,
+      ...this._parseOptions(options)
     }
-    // 同一张图片不处理
-    if (this.markUrl === imgUrl) return
-    return new Promise((resolve, reject) => {
-      const img = new Image()
-      img.onload = () => {
-        this.markUrl = imgUrl
-        this.mark = img
-        resolve(img)
-      }
-      img.onerror = reject
-      img.src = imgUrl
-    })
+  }
+
+  _parseOptions(value) {
+    return isObj(value) ? value : { value }
   }
 
   get width() {
@@ -62,20 +59,20 @@ export default class XTextImage {
     this.c.height = value
   }
 
-  get fontStyle() {
-    return `${this.height}px ${this.fontWeight} ${this.fontFamily}`
+  get font() {
+    return `${this.options.fontWeight} ${this.options.fontSize}px ${
+      this.options.fontFamily
+    }`
   }
 
-  _drawMark() {
-    if (!this.mark) {
-      return
-    }
+  _drawImage() {
+    if (!this.image) return
 
     this.ctx.save()
-    const width = this.mark.width
-    const height = this.mark.height
+    const width = this.image.width
+    const height = this.image.height
     this.ctx.drawImage(
-      this.mark,
+      this.image,
       this.width / 2 - width / 2,
       this.height / 2 - height / 2,
       width,
@@ -84,33 +81,64 @@ export default class XTextImage {
     this.ctx.restore()
   }
 
-  _drawText(text) {
+  _drawText() {
     this.ctx.save()
     this.ctx.fillStyle = this.color
-    this.ctx.font = this.fontStyle
+    this.ctx.font = this.font
     this.ctx.textBaseline = 'hanging'
-    this.ctx.fillText(text, 0, 0)
+    this.ctx.fillText(this.options.value, 0, 0)
     this.ctx.restore()
   }
 
-  _reset(text) {
+  _reset() {
     // clear
     this.ctx.clearRect(0, 0, this.width, this.height)
 
-    // computed image width
+    // computed image width/height
+    this.height = this.options.fontSize
+
     this.ctx.save()
-    this.ctx.font = this.fontStyle
-    this.width = this.ctx.measureText(text).width
+    this.ctx.font = this.font
+    this.width = this.ctx.measureText(this.options.value).width
     this.ctx.restore()
 
-    this._drawMark()
+    this._drawImage()
   }
 
-  getImageUrl(text) {
+  setImage(imgUrl) {
+    if (!imgUrl) {
+      this.image = null
+      this.imageUrl = null
+      return
+    }
+
+    if (!isSrc(imgUrl)) {
+      this.image = null
+      this.imageUrl = null
+      return
+    }
+
+    if (this.imageUrl === imgUrl) return
+
     return new Promise((resolve, reject) => {
-      this._reset(text)
+      const img = new Image()
+      img.onload = () => {
+        this.image = img
+        this.imageUrl = imgUrl
+        resolve(img)
+      }
+      img.onerror = reject
+      img.src = imgUrl
+    })
+  }
+
+  create(value, options = {}) {
+    return new Promise((resolve, reject) => {
+      Object.assign(this.options, options, this._parseOptions(value))
+
+      this._reset()
       // draw
-      this._drawText(text)
+      this._drawText()
 
       // export
       this.c.toBlob(blob => {
@@ -119,7 +147,9 @@ export default class XTextImage {
     })
   }
 
-  destroy(imgUrl) {
-    window.URL.revokeObjectURL(imgUrl)
+  destroy(url) {
+    if (/^blob:/.test(url)) {
+      window.URL.revokeObjectURL(url)
+    }
   }
 }
