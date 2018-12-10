@@ -1,6 +1,6 @@
 {
   "name": "@xg4/text2image",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "convert text to image by canvas",
   "main": "dist/index.min.js",
   "author": "xg4 <xingor4@gmail.com>",
@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
-    "release": "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "release": "npm run build && cross-env-shell git commit -am \"v\"$npm_package_version && cross-env-shell git tag \"v\"$npm_package_version && git push && git push --tags && npm publish --access=public"
   },
   "keywords": [
     "text",
@@ -32,6 +32,7 @@
     "@babel/core": "^7.2.0",
     "@babel/plugin-proposal-class-properties": "^7.2.1",
     "@babel/preset-env": "^7.2.0",
+    "cross-env": "^5.2.0",
     "rollup": "^0.67.4",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-uglify": "^6.0.0"
