@@ -14,7 +14,7 @@ export default class TextImage {
 
   defaultOptions = {
     fontSize: 30,
-    color: '#000',
+    color: '#000000',
     fontFamily: 'arial',
     fontWeight: 'normal',
     type: 'image/png',
@@ -163,9 +163,9 @@ export default class TextImage {
     })
   }
 
-  destroyURL(url) {
-    if (/^blob:/.test(url)) {
-      URL.revokeObjectURL(url)
+  destroyURL(objectUrl) {
+    if (/^blob:/.test(objectUrl)) {
+      URL.revokeObjectURL(objectUrl)
     }
   }
 }
