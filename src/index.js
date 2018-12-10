@@ -5,22 +5,14 @@ import { isObj, isSrc } from './utils/index'
  * @description convert text to image by canvas
  */
 export default class TextImage {
-  static new(...args) {
-    if (!this.instance) {
-      this.instance = new this(...args)
+  static create(...args) {
+    if (!this._instance) {
+      this._instance = new this(...args)
     }
-    return this.instance
+    return this._instance
   }
 
-  static setDefaultOptions(options) {
-    Object.assign(currentOptions, options)
-  }
-
-  static resetDefaultOptions() {
-    this.currentOptions = { ...this.defaultOptions }
-  }
-
-  static defaultOptions = {
+  defaultOptions = {
     fontSize: 30,
     color: '#000',
     fontFamily: 'arial',
@@ -29,8 +21,8 @@ export default class TextImage {
     quality: 0.92
   }
 
-  static currentOptions = {
-    ...TextImage.defaultOptions
+  currentOptions = {
+    ...this.defaultOptions
   }
 
   constructor(options = {}) {
@@ -38,9 +30,17 @@ export default class TextImage {
     this.ctx = this.c.getContext('2d')
 
     this.options = {
-      ...TextImage.currentOptions,
+      ...this.currentOptions,
       ...this._parseOptions(options)
     }
+  }
+
+  setDefaultOptions(options) {
+    Object.assign(this.currentOptions, options)
+  }
+
+  resetDefaultOptions() {
+    this.currentOptions = { ...this.defaultOptions }
   }
 
   _parseOptions(text) {
@@ -87,7 +87,8 @@ export default class TextImage {
     this.ctx.save()
     this.ctx.fillStyle = this.options.color
     this.ctx.font = this.font
-    this.ctx.textBaseline = 'hanging'
+    this.ctx.textBaseline = 'middle'
+    this.ctx.translate(0, this.height / 2)
     this.ctx.fillText(this.options.text, 0, 0)
     this.ctx.restore()
   }
@@ -117,12 +118,11 @@ export default class TextImage {
     return new Promise((resolve, reject) => {
       if (!isSrc(imgUrl)) {
         this.image = null
-        this.imageUrl = null
         resolve()
         return
       }
 
-      if (this.imageUrl === imgUrl) {
+      if (this.image && this.image.src === imgUrl) {
         resolve()
         return
       }
@@ -130,7 +130,6 @@ export default class TextImage {
       const img = new Image()
       img.onload = () => {
         this.image = img
-        this.imageUrl = imgUrl
         resolve(img)
       }
       img.onerror = reject
@@ -139,18 +138,21 @@ export default class TextImage {
   }
 
   toDataURL(text) {
-    Object.assign(this.options, this._parseOptions(text))
+    Object.assign(this.options, this.currentOptions, this._parseOptions(text))
 
     this._draw()
+
+    if (!(this.width && this.height)) return
     return this.c.toDataURL(this.options.type, this.options.quality)
   }
 
   createURL(text) {
     return new Promise(resolve => {
-      Object.assign(this.options, this._parseOptions(text))
+      Object.assign(this.options, this.currentOptions, this._parseOptions(text))
 
       this._draw()
 
+      if (!(this.width && this.height)) return
       this.c.toBlob(
         blob => {
           resolve(URL.createObjectURL(blob))

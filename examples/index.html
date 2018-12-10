@@ -52,18 +52,26 @@
         dataImg.src = ti.toDataURL({
           text: text.value,
           fontSize: fontSize.value,
-          color: color.value
+          color: color.value,
+          fontWeight: 'bold'
         })
         document.body.appendChild(dataImg)
       })
 
-      var img = document.querySelector('input[type=file]')
-      img.addEventListener('change', function() {
+      var file = document.querySelector('input[type=file]')
+      file.addEventListener('change', function() {
         btn.disabled = true
-        var reader = new FileReader()
-        reader.readAsDataURL(img.files[0])
-        reader.onload = function() {
-          ti.setImage(reader.result).then(function() {
+        var img = file.files[0]
+        if (img) {
+          var reader = new FileReader()
+          reader.readAsDataURL(img)
+          reader.onload = function() {
+            ti.setImage(reader.result).then(function() {
+              btn.disabled = false
+            })
+          }
+        } else {
+          ti.setImage().then(function() {
             btn.disabled = false
           })
         }

@@ -4,14 +4,16 @@ import pkg from './package.json'
 
 export default {
   input: 'src/index.js',
-  output: {
-    file: pkg.main,
-    format: 'umd',
-    name: 'TextImage',
-    globals: {
-      XTextImage: 'TextImage'
+  output: [
+    {
+      file: pkg.main,
+      format: 'umd',
+      name: 'TextImage',
+      globals: {
+        TextImage: 'TextImage'
+      }
     }
-  },
+  ],
   plugins: [
     babel({
       exclude: 'node_modules/**'
