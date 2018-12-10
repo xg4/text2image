@@ -25,14 +25,13 @@ export default class TextImage {
     ...this.defaultOptions
   }
 
+  options = {}
+
   constructor(options = {}) {
     this.c = document.createElement('canvas')
     this.ctx = this.c.getContext('2d')
 
-    this.options = {
-      ...this.currentOptions,
-      ...this._parseOptions(options)
-    }
+    this.setDefaultOptions(options)
   }
 
   setDefaultOptions(options) {
