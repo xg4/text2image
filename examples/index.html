@@ -4,78 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Text2Image</title>
-    <style>
-      img[src^='data'] {
-        border: 1px solid #f00;
-      }
-      img[src^='blob'] {
-        border: 1px solid #0f0;
-      }
-    </style>
+    <title>text2image</title>
   </head>
   <body>
-    <div>
-      文字内容：<input type="text" /> <br />
-      文字大小：<input type="range" value="10" /> <br />
-      文字颜色：<input type="color" value="#000000" /> <br />
-      水印图片：<input type="file" /><br />
-      <button>生成</button>
-    </div>
+    <div id="root"></div>
 
-    <script src="../dist/index.min.js"></script>
-
-    <script>
-      var text = document.querySelector('input[type=text]')
-      var fontSize = document.querySelector('input[type=range]')
-      var color = document.querySelector('input[type=color]')
-
-      var ti = new TextImage({
-        text: text.value,
-        fontSize: fontSize.value,
-        color: color.value
-      })
-
-      var btn = document.querySelector('button')
-      btn.addEventListener('click', function() {
-        ti.createURL({
-          text: text.value,
-          fontSize: fontSize.value,
-          color: color.value
-        }).then(function(url) {
-          var img = new Image()
-          img.src = url
-          document.body.appendChild(img)
-        })
-
-        var dataImg = new Image()
-        dataImg.src = ti.toDataURL({
-          text: text.value,
-          fontSize: fontSize.value,
-          color: color.value,
-          fontWeight: 'bold'
-        })
-        document.body.appendChild(dataImg)
-      })
-
-      var file = document.querySelector('input[type=file]')
-      file.addEventListener('change', function() {
-        btn.disabled = true
-        var img = file.files[0]
-        if (img) {
-          var reader = new FileReader()
-          reader.readAsDataURL(img)
-          reader.onload = function() {
-            ti.setImage(reader.result).then(function() {
-              btn.disabled = false
-            })
-          }
-        } else {
-          ti.setImage().then(function() {
-            btn.disabled = false
-          })
-        }
-      })
-    </script>
+    <script src="./index.js"></script>
   </body>
 </html>

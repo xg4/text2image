@@ -20,6 +20,7 @@ $ yarn add @xg4/text2image
 
 ```js
 import TextImage from '@xg4/text2image'
+
 const ti = new TextImage()
 // or
 // initialization default options
@@ -51,6 +52,7 @@ img.onload = function() {
   ti.destroyURL(this.src)
 }
 img.src = url
+
 document.body.appendChild(img)
 ```
 
@@ -68,22 +70,29 @@ const url = ti.toDataURL({
 
 const img = new Image()
 img.src = url
+
 document.body.appendChild(img)
 ```
 
-## Constructor Options
+## Example
+
+> [https://xg4.github.io/text2image](https://xg4.github.io/text2image)
+
+## API
+
+### Constructor Options
 
 > default options
 
-| key          | description          | default     | options         |
-| ------------ | -------------------- | ----------- | --------------- |
-| `text`       | image content        | `null`      | `String`        |
-| `fontSize`   | font size            | `30`        | `Number|String` |
-| `fontWeight` | font weight          | `normal`    | `Number|String` |
-| `fontFamily` | font family          | `arial`     | `String`        |
-| `color`      | font color           | `#000000`   | `String`        |
-| `type`       | export image type    | `image/png` | `String`        |
-| `quality`    | export image quality | `0.92`      | `Number`        |
+| name         | type             | default     | description          |
+| ------------ | ---------------- | ----------- | -------------------- |
+| `text`       | `string`         | `null`      | image content        |
+| `fontSize`   | `number\|string` | `30`        | font size            |
+| `fontWeight` | `number\|string` | `normal`    | font weight          |
+| `fontFamily` | `string`         | `arial`     | font family          |
+| `color`      | `string`         | `#000000`   | font color           |
+| `type`       | `string`         | `image/png` | export image type    |
+| `quality`    | `number`         | `0.92`      | export image quality |
 
 ```js
 // use current options convert default options
@@ -95,9 +104,9 @@ ti.setDefaultOptions({
 ti.resetDefaultOptions()
 ```
 
-## polyfill
+## Polyfills needed to support older browsers
 
-> use for IE
+> `HTMLCanvasElement.prototype.toBlob`: see [MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob#Polyfill) for details about unsupported older browsers and a simple polyfill.
 
 ```js
 ;(function() {

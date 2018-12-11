@@ -1,0 +1,32 @@
+img[src^='data'] {
+  border: 1px solid #f00;
+}
+img[src^='blob'] {
+  border: 1px solid #0f0;
+}
+
+.control {
+  margin: 0 auto;
+  width: 500px;
+  margin-bottom: 20px;
+}
+
+.control-group {
+  margin-bottom: 10px;
+}
+
+.control-label {
+  text-align: right;
+  display: inline-block;
+  min-width: 35%;
+  margin-right: 10px;
+}
+
+.control-inner {
+  display: inline-block;
+  width: 60%;
+}
+
+button {
+  margin-right: 5px;
+}

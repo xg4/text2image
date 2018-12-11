@@ -1,0 +1,35 @@
+{
+  "name": "@xg4/text2image",
+  "description": "convert text to image by canvas",
+  "author": "xg4 <xingor4@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "parcel index.html",
+    "build": "parcel build index.html --public-url ./",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "keywords": [
+    "text",
+    "image",
+    "convert",
+    "canvas",
+    "URL"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xg4/text2image.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xg4/text2image/issues"
+  },
+  "homepage": "https://github.com/xg4/text2image#readme",
+  "dependencies": {
+    "react": "^16.7.0-alpha.2",
+    "react-dom": "^16.7.0-alpha.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-0",
+    "gh-pages": "^2.0.1",
+    "parcel-bundler": "^1.10.3"
+  }
+}
