@@ -4,7 +4,7 @@
 
 ## Installation
 
-Install with npm or Yarn.
+### Install with npm or Yarn
 
 ```bash
 # npm
@@ -34,6 +34,9 @@ const ti = new TextImage({
 ```
 
 ```js
+// set background image or not
+await ti.setImage(imgUrl)
+
 // create object url
 const url = ti.createURL('hello world')
 // or
@@ -52,6 +55,9 @@ document.body.appendChild(img)
 ```
 
 ```js
+// set background image or not
+await ti.setImage(imgUrl)
+
 // create data url
 const url = ti.toDataURL('hello world')
 // or
@@ -65,36 +71,52 @@ img.src = url
 document.body.appendChild(img)
 ```
 
-## API
+## Constructor Options
 
-| 参数                | 说明             | 类型     | arguments     | return      |
-| ------------------- | ---------------- | -------- | ------------- | ----------- |
-| toDataURL           | 导出 data:base64 | function | string/option | data:base64 |
-| createURL           | 导出 object URL  | function | string/option | object URL  |
-| destroyURL          | 销毁 object URL  | function | object URL    | void        |
-| setDefaultOptions   | 设置默认选项     | function | option        | void        |
-| resetDefaultOptions | 重置默认选项     | function | 无            | void        |
-| setImage            | 设置背景图片     | function | image url     | Promise     |
+> default options
 
-```ts
-interface options {
-  text: string // 文本内容
-  fontSize: number | string // 字体大小
-  color: string // 字体颜色
-  fontFamily: string // 字体样式
-  fontWeight: string | number // 字体粗细
-  type: string // 导出图片类型
-  quality: number | string // 导出图片质量
-}
+| key          | description          | default     | options         |
+| ------------ | -------------------- | ----------- | --------------- |
+| `text`       | image content        | `null`      | `String`        |
+| `fontSize`   | font size            | `30`        | `Number|String` |
+| `fontWeight` | font weight          | `normal`    | `Number|String` |
+| `fontFamily` | font family          | `arial`     | `String`        |
+| `color`      | font color           | `#000000`   | `String`        |
+| `type`       | export image type    | `image/png` | `String`        |
+| `quality`    | export image quality | `0.92`      | `Number`        |
 
-defaultOptions = {
-  fontSize: 30,
-  color: '#000000',
-  fontFamily: 'arial',
-  fontWeight: 'normal',
-  type: 'image/png',
-  quality: 0.92
-}
+```js
+// use current options convert default options
+ti.setDefaultOptions({
+  // some options
+})
+
+// reset default options
+ti.resetDefaultOptions()
+```
+
+## polyfill
+
+> use for IE
+
+```js
+;(function() {
+  if (!HTMLCanvasElement.prototype.toBlob) {
+    Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+      value: function(callback, type, quality) {
+        var binStr = atob(this.toDataURL(type, quality).split(',')[1]),
+          len = binStr.length,
+          arr = new Uint8Array(len)
+
+        for (var i = 0; i < len; i++) {
+          arr[i] = binStr.charCodeAt(i)
+        }
+
+        callback(new Blob([arr], { type: type || 'image/png' }))
+      }
+    })
+  }
+})()
 ```
 
 ## Browsers support

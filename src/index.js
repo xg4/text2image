@@ -1,4 +1,3 @@
-import './polyfill'
 import { isObj, isSrc } from './utils/index'
 
 /**
@@ -126,6 +125,8 @@ export default class TextImage {
         return
       }
 
+      this.image = null
+
       const img = new Image()
       img.onload = () => {
         this.image = img
@@ -137,7 +138,10 @@ export default class TextImage {
   }
 
   toDataURL(text) {
-    Object.assign(this.options, this.currentOptions, this._parseOptions(text))
+    this.options = {
+      ... this.currentOptions,
+      ...this._parseOptions(text)
+    }
 
     this._draw()
 
@@ -147,7 +151,10 @@ export default class TextImage {
 
   createURL(text) {
     return new Promise(resolve => {
-      Object.assign(this.options, this.currentOptions, this._parseOptions(text))
+      this.options = {
+        ... this.currentOptions,
+        ...this._parseOptions(text)
+      }
 
       this._draw()
 
