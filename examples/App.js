@@ -7,7 +7,8 @@ export default class App extends React.Component {
     size: 20,
     color: '#000000',
     img: '',
-    btnLoading: false
+    btnLoading: false,
+    weight: 500
   }
 
   componentDidMount() {
@@ -22,12 +23,22 @@ export default class App extends React.Component {
     this.setState({ [key]: value })
   }
 
+  handleInputChange = ({ target }) => {
+    const { type, name } = target
+    const value = type === 'checkbox' ? target.checked : target.value
+    this.setState({
+      [name]: value
+    })
+  }
+
   handleGenerateB = () => {
+    console.log(this.state.weight)
     const img = new Image()
     img.src = this.ti.toDataURL({
       text: this.state.text,
       fontSize: this.state.size,
-      color: this.state.color
+      color: this.state.color,
+      fontWeight: this.state.weight
     })
     document.body.appendChild(img)
   }
@@ -37,7 +48,9 @@ export default class App extends React.Component {
       .createURL({
         text: this.state.text,
         fontSize: this.state.size,
-        color: this.state.color
+        color: this.state.color,
+        fontWeight: this.state.weight,
+        gradient: [[0, '#f12929'], [1, '#ff502f']]
       })
       .then(url => {
         const img = new Image()
@@ -78,7 +91,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { text, size, color, btnLoading } = this.state
+    const { text, size, color, btnLoading, weight } = this.state
 
     return (
       <div className="control">
@@ -88,9 +101,8 @@ export default class App extends React.Component {
             <input
               type="text"
               value={text}
-              onChange={ev => {
-                this.handleChange('text', ev.target.value)
-              }}
+              name="text"
+              onChange={this.handleInputChange}
             />
           </div>
         </div>
@@ -100,11 +112,24 @@ export default class App extends React.Component {
             <input
               type="range"
               value={size}
-              onChange={ev => {
-                this.handleChange('size', ev.target.value)
-              }}
+              name="size"
+              onChange={this.handleInputChange}
             />
             <span>{size}</span>
+          </div>
+        </div>
+        <div className="control-group">
+          <span className="control-label">weight:</span>
+          <div className="control-inner">
+            <input
+              type="range"
+              value={weight}
+              min="100"
+              max="900"
+              name="weight"
+              onChange={this.handleInputChange}
+            />
+            <span>{weight}</span>
           </div>
         </div>
         <div className="control-group">
@@ -113,9 +138,8 @@ export default class App extends React.Component {
             <input
               type="color"
               value={color}
-              onChange={ev => {
-                this.handleChange('color', ev.target.value)
-              }}
+              name="color"
+              onChange={this.handleInputChange}
             />
             <span>{color}</span>
           </div>

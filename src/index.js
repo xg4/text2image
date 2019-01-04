@@ -14,7 +14,7 @@ export default class TextImage {
   defaultOptions = {
     fontSize: 30,
     color: '#000000',
-    fontFamily: 'arial',
+    fontFamily: 'Arial',
     fontWeight: 'normal',
     type: 'image/png',
     quality: 0.92
@@ -83,7 +83,17 @@ export default class TextImage {
 
   _drawText() {
     this.ctx.save()
-    this.ctx.fillStyle = this.options.color
+
+    if (this.options.gradient) {
+      const gradient = this.ctx.createLinearGradient(0, 0, this.width, 0)
+      this.options.gradient.forEach(v => {
+        gradient.addColorStop(...v)
+      })
+      this.ctx.fillStyle = gradient
+    } else {
+      this.ctx.fillStyle = this.options.color
+    }
+
     this.ctx.font = this.font
     this.ctx.textBaseline = 'middle'
     this.ctx.translate(0, this.height / 2)
@@ -139,7 +149,7 @@ export default class TextImage {
 
   toDataURL(text) {
     this.options = {
-      ... this.currentOptions,
+      ...this.currentOptions,
       ...this._parseOptions(text)
     }
 
@@ -152,7 +162,7 @@ export default class TextImage {
   createURL(text) {
     return new Promise(resolve => {
       this.options = {
-        ... this.currentOptions,
+        ...this.currentOptions,
         ...this._parseOptions(text)
       }
 
