@@ -1,6 +1,6 @@
 {
   "name": "@xg4/text2image",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "convert text to image by canvas",
   "main": "dist/index.min.js",
   "author": "xg4 <xingor4@gmail.com>",
