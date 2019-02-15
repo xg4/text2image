@@ -1,7 +1,9 @@
 import React from 'react'
-import TextImage from '../dist/index.min.js'
+import TextImage from '../src'
 
 export default class App extends React.Component {
+  ti: TextImage
+
   state = {
     text: '',
     size: 20,
@@ -73,7 +75,7 @@ export default class App extends React.Component {
           const reader = new FileReader()
           reader.readAsDataURL(file)
           reader.onload = () => {
-            this.ti.setImage(reader.result).then(() => {
+            this.ti.setImage(reader.result as string).then(() => {
               this.setState({
                 btnLoading: false
               })

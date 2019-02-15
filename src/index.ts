@@ -158,9 +158,9 @@ export default class TextImage {
     this.drawText()
   }
 
-  setImage(imgUrl: string): Promise<HTMLImageElement> {
+  setImage(imgUrl?: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
-      if (!isSrc(imgUrl)) {
+      if (!imgUrl || !isSrc(imgUrl)) {
         this.image = null
         resolve()
         return
@@ -195,7 +195,7 @@ export default class TextImage {
     return this.c.toDataURL(this.options.type, this.options.quality)
   }
 
-  createURL(text: string | IOptions) {
+  createURL(text: string | IOptions): Promise<string> {
     return new Promise(resolve => {
       this.options = {
         ...this.currentOptions,
