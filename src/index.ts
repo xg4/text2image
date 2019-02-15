@@ -1,14 +1,41 @@
-import { isObj, isSrc } from './utils/index'
+import { isObj, isSrc } from './utils'
+import polyfill from './polyfill'
+
+interface IOptions {
+  fontSize?: number
+  color?: string
+  fontFamily?: string
+  fontWeight?: string | number
+  type?: string
+  quality?: number
+  text?: string
+  gradient?: [number, string][]
+}
+
+interface IDefaultOptions {
+  fontSize: number
+  color: string
+  fontFamily: string
+  fontWeight: string | number
+  type: string
+  quality: number
+  text: string
+  gradient?: [number, string][]
+}
 
 /**
  * @description convert text to image by canvas
  */
 export default class TextImage {
-  static create(...args) {
-    if (!this._instance) {
-      this._instance = new this(...args)
+  private static instance: TextImage
+
+  public static polyfill = polyfill
+
+  static create(...args: any[]) {
+    if (!this.instance) {
+      this.instance = new this(...args)
     }
-    return this._instance
+    return this.instance
   }
 
   defaultOptions = {
@@ -17,23 +44,32 @@ export default class TextImage {
     fontFamily: 'Arial',
     fontWeight: 'normal',
     type: 'image/png',
-    quality: 0.92
+    quality: 0.92,
+    text: ''
   }
 
   currentOptions = {
     ...this.defaultOptions
   }
 
-  options = {}
+  options: IDefaultOptions = {
+    ...this.defaultOptions
+  }
 
-  constructor(options = {}) {
+  image?: HTMLImageElement | null
+
+  c: HTMLCanvasElement
+
+  ctx: CanvasRenderingContext2D
+
+  constructor(options: IOptions = {}) {
     this.c = document.createElement('canvas')
-    this.ctx = this.c.getContext('2d')
+    this.ctx = this.c.getContext('2d') as CanvasRenderingContext2D
 
     this.setDefaultOptions(options)
   }
 
-  setDefaultOptions(options) {
+  setDefaultOptions(options: IOptions = {}) {
     Object.assign(this.currentOptions, options)
   }
 
@@ -41,8 +77,8 @@ export default class TextImage {
     this.currentOptions = { ...this.defaultOptions }
   }
 
-  _parseOptions(text) {
-    return isObj(text) ? text : { text }
+  private parseOptions(text: string | IOptions): IOptions {
+    return isObj(text) ? (text as IOptions) : ({ text } as IOptions)
   }
 
   get width() {
@@ -65,7 +101,7 @@ export default class TextImage {
     }`
   }
 
-  _drawImage() {
+  private drawImage() {
     if (!this.image) return
 
     this.ctx.save()
@@ -81,7 +117,7 @@ export default class TextImage {
     this.ctx.restore()
   }
 
-  _drawText() {
+  private drawText() {
     this.ctx.save()
 
     if (this.options.gradient) {
@@ -101,7 +137,7 @@ export default class TextImage {
     this.ctx.restore()
   }
 
-  _getTextWidth() {
+  private getTextWidth() {
     this.ctx.save()
     this.ctx.font = this.font
     const width = this.ctx.measureText(this.options.text).width
@@ -109,20 +145,20 @@ export default class TextImage {
     return width
   }
 
-  _draw() {
+  private draw() {
     // clear
     this.ctx.clearRect(0, 0, this.width, this.height)
 
     // computed image width/height
     this.height = this.options.fontSize
-    this.width = this._getTextWidth()
+    this.width = this.getTextWidth()
 
     // draw
-    this._drawImage()
-    this._drawText()
+    this.drawImage()
+    this.drawText()
   }
 
-  setImage(imgUrl) {
+  setImage(imgUrl: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       if (!isSrc(imgUrl)) {
         this.image = null
@@ -147,26 +183,26 @@ export default class TextImage {
     })
   }
 
-  toDataURL(text) {
+  toDataURL(text: string | IOptions) {
     this.options = {
       ...this.currentOptions,
-      ...this._parseOptions(text)
+      ...this.parseOptions(text)
     }
 
-    this._draw()
+    this.draw()
 
     if (!(this.width && this.height)) return
     return this.c.toDataURL(this.options.type, this.options.quality)
   }
 
-  createURL(text) {
+  createURL(text: string | IOptions) {
     return new Promise(resolve => {
       this.options = {
         ...this.currentOptions,
-        ...this._parseOptions(text)
+        ...this.parseOptions(text)
       }
 
-      this._draw()
+      this.draw()
 
       if (!(this.width && this.height)) return
       this.c.toBlob(
@@ -179,9 +215,7 @@ export default class TextImage {
     })
   }
 
-  destroyURL(objectUrl) {
-    if (/^blob:/.test(objectUrl)) {
-      URL.revokeObjectURL(objectUrl)
-    }
+  destroyURL(url: string) {
+    return URL.revokeObjectURL(url)
   }
 }
