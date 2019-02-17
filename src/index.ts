@@ -1,17 +1,10 @@
 import { isObj, isSrc } from './utils'
 
-interface IOptions {
-  fontSize?: number
-  color?: string
-  fontFamily?: string
-  fontWeight?: string | number
-  type?: string
-  quality?: number
-  text?: string
-  gradient?: Array<[number, string]>
-}
+type Partial<T> = { [P in keyof T]?: T[P] }
 
-interface IDefaultOptions {
+type PartialOptions = Partial<IOptions>
+
+interface IOptions {
   fontSize: number
   color: string
   fontFamily: string
@@ -54,7 +47,7 @@ export default class TextImage {
   }
   private static instance: TextImage
 
-  public defaultOptions = {
+  private defaultOptions: IOptions = {
     fontSize: 30,
     color: '#000000',
     fontFamily: 'Arial',
@@ -64,28 +57,28 @@ export default class TextImage {
     text: '',
   }
 
-  public currentOptions = {
+  private currentOptions: IOptions = {
     ...this.defaultOptions,
   }
 
-  public options: IDefaultOptions = {
+  private options: IOptions = {
     ...this.defaultOptions,
   }
 
-  public image?: HTMLImageElement | null
+  private image?: HTMLImageElement | null
 
-  public c: HTMLCanvasElement
+  private c: HTMLCanvasElement
 
-  public ctx: CanvasRenderingContext2D
+  private ctx: CanvasRenderingContext2D
 
-  constructor(options: IOptions = {}) {
+  constructor(options?: PartialOptions) {
     this.c = document.createElement('canvas')
     this.ctx = this.c.getContext('2d') as CanvasRenderingContext2D
 
     this.setDefaultOptions(options)
   }
 
-  public setDefaultOptions(options: IOptions = {}) {
+  public setDefaultOptions(options: PartialOptions = {}) {
     Object.assign(this.currentOptions, options)
   }
 
@@ -118,7 +111,7 @@ export default class TextImage {
     })
   }
 
-  public toDataURL(text: string | IOptions) {
+  public toDataURL(text: string | PartialOptions) {
     this.options = {
       ...this.currentOptions,
       ...this.parseOptions(text),
@@ -132,7 +125,7 @@ export default class TextImage {
     return this.c.toDataURL(this.options.type, this.options.quality)
   }
 
-  public createURL(text: string | IOptions): Promise<string> {
+  public createURL(text: string | PartialOptions): Promise<string> {
     return new Promise((resolve) => {
       this.options = {
         ...this.currentOptions,
@@ -158,8 +151,8 @@ export default class TextImage {
     return URL.revokeObjectURL(url)
   }
 
-  private parseOptions(text: string | IOptions): IOptions {
-    return isObj(text) ? (text as IOptions) : ({ text } as IOptions)
+  private parseOptions(text: string | PartialOptions): PartialOptions {
+    return isObj(text) ? (text as PartialOptions) : ({ text } as PartialOptions)
   }
 
   private drawImage() {
