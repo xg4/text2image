@@ -1,5 +1,4 @@
 import { isObj, isSrc } from './utils'
-import polyfill from './polyfill'
 
 interface IOptions {
   fontSize?: number
@@ -28,8 +27,6 @@ interface IDefaultOptions {
  */
 export default class TextImage {
   private static instance: TextImage
-
-  public static polyfill = polyfill
 
   static create(...args: any[]) {
     if (!this.instance) {
