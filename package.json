@@ -12,12 +12,24 @@
   ],
   "scripts": {
     "dev": "rollup -c -w",
+    "lint": "tslint src/**/*.{ts,tsx} ",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "rollup -c",
     "build": "npm run build:types && npm run build:js",
     "release": "npm run build && git commit -am \"v\"%npm_package_version% && git tag \"v\"%npm_package_version% && git push && git push --tags && npm publish --access"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "tslint",
+      "git add"
+    ]
   },
   "keywords": [
     "text",
@@ -33,11 +45,14 @@
     "@babel/plugin-proposal-class-properties": "^7.3.0",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-typescript": "^7.1.0",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.4",
     "rollup": "^1.1.2",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-terser": "^4.0.4",
+    "tslint": "^5.12.1",
     "typescript": "^3.3.3"
   },
   "repository": {
