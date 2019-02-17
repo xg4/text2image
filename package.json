@@ -1,6 +1,6 @@
 {
   "name": "@xg4/text2image",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "convert text to image by canvas",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
