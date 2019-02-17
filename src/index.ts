@@ -1,9 +1,5 @@
 import { isObj, isSrc } from './utils'
 
-type Partial<T> = { [P in keyof T]?: T[P] }
-
-type PartialOptions = Partial<IOptions>
-
 interface IOptions {
   fontSize: number
   color: string
@@ -14,6 +10,10 @@ interface IOptions {
   text: string
   gradient?: Array<[number, string]>
 }
+
+type Partial<T> = { [P in keyof T]?: T[P] }
+
+type PartialOptions = Partial<IOptions>
 
 /**
  * @description convert text to image by canvas
