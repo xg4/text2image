@@ -11,9 +11,7 @@ interface IOptions {
   gradient?: Array<[number, string]>
 }
 
-type Partial<T> = { [P in keyof T]?: T[P] }
-
-type PartialOptions = Partial<IOptions>
+type PartialOptions = { [T in keyof IOptions]?: IOptions[T] }
 
 /**
  * @description convert text to image by canvas
