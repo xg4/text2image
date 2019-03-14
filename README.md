@@ -1,5 +1,8 @@
 # text2image
 
+[![npm](https://img.shields.io/npm/v/@xg4/text2image.svg?color=blue)](https://www.npmjs.com/package/@xg4/text2image)
+[![npm](https://img.shields.io/npm/l/@xg4/text2image.svg)](https://www.npmjs.com/package/@xg4/text2image)
+
 > convert text to image by canvas
 
 ## Installation
