@@ -1,5 +1,6 @@
 # text2image
 
+[![Build Status](https://www.travis-ci.org/xg4/text2image.svg?branch=master)](https://www.travis-ci.org/xg4/text2image)
 [![npm](https://img.shields.io/npm/v/@xg4/text2image.svg?color=blue)](https://www.npmjs.com/package/@xg4/text2image)
 [![npm](https://img.shields.io/npm/l/@xg4/text2image.svg)](https://www.npmjs.com/package/@xg4/text2image)
 
@@ -15,7 +16,7 @@ $ npm install @xg4/text2image --save
 ```
 
 ```bash
-#yarn
+# yarn
 $ yarn add @xg4/text2image
 ```
 
