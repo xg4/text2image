@@ -4,8 +4,8 @@
   "author": "xg4 <xingor4@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "parcel index.html",
-    "build": "parcel build index.html --public-url ./",
+    "dev": "parcel index.html --no-cache",
+    "build": "rimraf dist && parcel build index.html -d dist --public-url ./ --no-source-maps --no-content-hash --no-cache",
     "deploy": "npm run build && gh-pages -d dist"
   },
   "keywords": [
@@ -32,6 +32,7 @@
     "@types/react": "^16.8.3",
     "@types/react-dom": "^16.8.1",
     "gh-pages": "^2.0.1",
-    "parcel-bundler": "^1.10.3"
+    "parcel-bundler": "^1.10.3",
+    "rimraf": "^2.6.3"
   }
 }

@@ -2,59 +2,60 @@ import React from 'react'
 import TextImage from '../src'
 
 export default class App extends React.Component {
-  ti: TextImage
+  public ti: TextImage
 
-  state = {
+  public state = {
     text: '',
     size: 20,
     color: '#000000',
     img: '',
     btnLoading: false,
-    weight: 500
+    weight: 500,
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     this.ti = new TextImage({
       text: this.state.text,
       fontSize: this.state.size,
-      color: this.state.color
+      color: this.state.color,
     })
   }
 
-  handleChange = (key, value) => {
+  public handleChange = (key, value) => {
     this.setState({ [key]: value })
   }
 
-  handleInputChange = ({ target }) => {
+  public handleInputChange = ({ target }) => {
     const { type, name } = target
     const value = type === 'checkbox' ? target.checked : target.value
     this.setState({
-      [name]: value
+      [name]: value,
     })
   }
 
-  handleGenerateB = () => {
+  public handleGenerateB = () => {
+    // tslint:disable-next-line
     console.log(this.state.weight)
     const img = new Image()
     img.src = this.ti.toDataURL({
       text: this.state.text,
       fontSize: this.state.size,
       color: this.state.color,
-      fontWeight: this.state.weight
+      fontWeight: this.state.weight,
     })
     document.body.appendChild(img)
   }
 
-  handleGenerateA = () => {
+  public handleGenerateA = () => {
     this.ti
       .createURL({
         text: this.state.text,
         fontSize: this.state.size,
         color: this.state.color,
         fontWeight: this.state.weight,
-        gradient: [[0, '#f12929'], [1, '#ff502f']]
+        gradient: [[0, '#f12929'], [1, '#ff502f']],
       })
-      .then(url => {
+      .then((url) => {
         const img = new Image()
         img.onload = () => {
           // this.ti.destroyURL(img.src)
@@ -64,11 +65,11 @@ export default class App extends React.Component {
       })
   }
 
-  handleUpload = ({ target }) => {
+  public handleUpload = ({ target }) => {
     const file = target.files[0]
     this.setState(
       {
-        btnLoading: true
+        btnLoading: true,
       },
       () => {
         if (file) {
@@ -77,22 +78,22 @@ export default class App extends React.Component {
           reader.onload = () => {
             this.ti.setImage(reader.result as string).then(() => {
               this.setState({
-                btnLoading: false
+                btnLoading: false,
               })
             })
           }
         } else {
           this.ti.setImage().then(() => {
             this.setState({
-              btnLoading: false
+              btnLoading: false,
             })
           })
         }
-      }
+      },
     )
   }
 
-  render() {
+  public render() {
     const { text, size, color, btnLoading, weight } = this.state
 
     return (
