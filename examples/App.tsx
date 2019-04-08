@@ -14,8 +14,6 @@ export default class App extends React.Component {
   }
 
   public componentDidMount() {
-    // tslint:disable-next-line
-    console.log('test ci')
     this.ti = new TextImage({
       text: this.state.text,
       fontSize: this.state.size,

@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "parcel index.html --no-cache",
-    "build": "rimraf dist && parcel build index.html -d dist --public-url ./ --no-source-maps --no-content-hash --no-cache",
+    "build": "rimraf dist && parcel build index.html -d dist --public-url ./ --no-source-maps --no-cache",
     "deploy": "npm run build && gh-pages -d dist"
   },
   "keywords": [
