@@ -11,7 +11,7 @@ interface IOptions {
   gradient?: Array<[number, string]>
 }
 
-type PartialOptions = { [T in keyof IOptions]?: IOptions[T] }
+export type PartialOptions = { [T in keyof IOptions]?: IOptions[T] }
 
 /**
  * @description convert text to image by canvas
@@ -150,7 +150,7 @@ export default class TextImage {
   }
 
   private parseOptions(text: string | PartialOptions): PartialOptions {
-    return isObj(text) ? (text as PartialOptions) : ({ text } as PartialOptions)
+    return isObj(text) ? text : { text }
   }
 
   private drawImage() {
