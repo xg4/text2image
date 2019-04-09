@@ -14,16 +14,22 @@ script:
   - npm run lint
 
 before_deploy:
-  - cd ./examples && yarn && npm run build
+  - npm run build && cd ./examples && yarn && npm run build
 
 deploy:
-  provider: pages
-  local_dir: ./examples/dist
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  keep_history: true
-  on:
-    branch: master
+  - provider: npm
+    skip_cleanup: true
+    email: "xingor4@gmail.com"
+    api_key: $NPM_TOKEN
+    on:
+      tags: true
+  - provider: pages
+    local_dir: ./examples/dist
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    keep_history: true
+    on:
+      branch: master
 
 branches:
   only:

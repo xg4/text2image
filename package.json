@@ -1,6 +1,6 @@
 {
   "name": "@xg4/text2image",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "convert text to image by canvas",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -18,8 +18,7 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "rollup -c",
     "build": "rimraf dist && npm run build:types && npm run build:js",
-    "release:git": "git commit -am \"v\"%npm_package_version% && git tag \"v\"%npm_package_version% && git push && git push --tags",
-    "release": "npm run build && npm run release:git && npm publish --access"
+    "release": "git commit -am \"v\"%npm_package_version% && git tag \"v\"%npm_package_version% && git push && git push --tags"
   },
   "husky": {
     "hooks": {
@@ -64,5 +63,9 @@
   "bugs": {
     "url": "https://github.com/xg4/text2image/issues"
   },
-  "homepage": "https://github.com/xg4/text2image#readme"
+  "homepage": "https://github.com/xg4/text2image#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
 }
