@@ -19,7 +19,7 @@ before_deploy:
 deploy:
   - provider: npm
     skip_cleanup: true
-    email: "xingor4@gmail.com"
+    email: $NPM_EMAIL
     api_key: $NPM_TOKEN
     on:
       tags: true
@@ -34,6 +34,7 @@ deploy:
 branches:
   only:
     - master
+    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 
 cache:
   yarn: true

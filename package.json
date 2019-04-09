@@ -18,7 +18,9 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "rollup -c",
     "build": "rimraf dist && npm run build:types && npm run build:js",
-    "release": "git commit -am \"v\"%npm_package_version% && git tag \"v\"%npm_package_version% && git push && git push --tags"
+    "release:commit": "cross-var git commit -am \"v\"$npm_package_version",
+    "release:tag": "cross-var git tag \"v\"$npm_package_version -m \"build: release \"$npm_package_version",
+    "release": "npm run release:commit && npm run release:tag && git push --follow-tags"
   },
   "husky": {
     "hooks": {
@@ -63,9 +65,5 @@
   "bugs": {
     "url": "https://github.com/xg4/text2image/issues"
   },
-  "homepage": "https://github.com/xg4/text2image#readme",
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org"
-  }
+  "homepage": "https://github.com/xg4/text2image#readme"
 }
