@@ -65,5 +65,8 @@
   "bugs": {
     "url": "https://github.com/xg4/text2image/issues"
   },
-  "homepage": "https://github.com/xg4/text2image#readme"
+  "homepage": "https://github.com/xg4/text2image#readme",
+  "publishConfig": {
+    "access": "public"
+  }
 }
