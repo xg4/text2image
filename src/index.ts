@@ -1,6 +1,6 @@
 import { isObj, isSrc } from './utils'
 
-interface IOptions {
+interface Options {
   fontSize: number
   color: string
   fontFamily: string
@@ -8,30 +8,30 @@ interface IOptions {
   type: string
   quality: number
   text: string
-  gradient?: Array<[number, string]>
+  gradient?: [number, string][]
 }
 
-export type PartialOptions = { [T in keyof IOptions]?: IOptions[T] }
+export type PartialOptions = { [T in keyof Options]?: Options[T] }
 
 /**
  * @description convert text to image by canvas
  */
 export default class TextImage {
-  get width() {
+  public get width() {
     return this.c.width
   }
-  set width(value) {
+  public set width(value) {
     this.c.width = value
   }
 
-  get height() {
+  public get height() {
     return this.c.height
   }
-  set height(value) {
+  public set height(value) {
     this.c.height = value
   }
 
-  get font() {
+  public get font() {
     return `${this.options.fontWeight} ${this.options.fontSize}px ${
       this.options.fontFamily
     }`
@@ -45,22 +45,22 @@ export default class TextImage {
   }
   private static instance: TextImage
 
-  private defaultOptions: IOptions = {
+  private defaultOptions: Options = {
     fontSize: 30,
     color: '#000000',
     fontFamily: 'Arial',
     fontWeight: 'normal',
     type: 'image/png',
     quality: 0.92,
-    text: '',
+    text: ''
   }
 
-  private currentOptions: IOptions = {
-    ...this.defaultOptions,
+  private currentOptions: Options = {
+    ...this.defaultOptions
   }
 
-  private options: IOptions = {
-    ...this.defaultOptions,
+  private options: Options = {
+    ...this.defaultOptions
   }
 
   private image?: HTMLImageElement | null
@@ -69,7 +69,7 @@ export default class TextImage {
 
   private ctx: CanvasRenderingContext2D
 
-  constructor(options?: PartialOptions) {
+  public constructor(options?: PartialOptions) {
     this.c = document.createElement('canvas')
     this.ctx = this.c.getContext('2d') as CanvasRenderingContext2D
 
@@ -112,7 +112,7 @@ export default class TextImage {
   public toDataURL(text: string | PartialOptions) {
     this.options = {
       ...this.currentOptions,
-      ...this.parseOptions(text),
+      ...this.parseOptions(text)
     }
 
     this.draw()
@@ -124,10 +124,10 @@ export default class TextImage {
   }
 
   public createURL(text: string | PartialOptions): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.options = {
         ...this.currentOptions,
-        ...this.parseOptions(text),
+        ...this.parseOptions(text)
       }
 
       this.draw()
@@ -136,11 +136,11 @@ export default class TextImage {
         return
       }
       this.c.toBlob(
-        (blob) => {
+        blob => {
           resolve(URL.createObjectURL(blob))
         },
         this.options.type,
-        this.options.quality,
+        this.options.quality
       )
     })
   }
@@ -166,7 +166,7 @@ export default class TextImage {
       this.width / 2 - width / 2,
       this.height / 2 - height / 2,
       width,
-      height,
+      height
     )
     this.ctx.restore()
   }
@@ -176,7 +176,7 @@ export default class TextImage {
 
     if (this.options.gradient) {
       const gradient = this.ctx.createLinearGradient(0, 0, this.width, 0)
-      this.options.gradient.forEach((v) => {
+      this.options.gradient.forEach(v => {
         gradient.addColorStop(...v)
       })
       this.ctx.fillStyle = gradient
