@@ -11,15 +11,24 @@ interface Options {
   gradient?: [number, string][]
 }
 
-export type PartialOptions = { [T in keyof Options]?: Options[T] }
-
 /**
  * @description convert text to image by canvas
  */
-export default class TextImage {
+export default class Text2image {
+  private static instance: Text2image
+
+  public static create(options?: Partial<Options>) {
+    if (!this.instance) {
+      this.instance = new this(options)
+    }
+    this.instance.setDefaultOptions(options)
+    return this.instance
+  }
+
   public get width() {
     return this.c.width
   }
+
   public set width(value) {
     this.c.width = value
   }
@@ -27,6 +36,7 @@ export default class TextImage {
   public get height() {
     return this.c.height
   }
+
   public set height(value) {
     this.c.height = value
   }
@@ -36,14 +46,6 @@ export default class TextImage {
       this.options.fontFamily
     }`
   }
-
-  public static create(...args: any[]) {
-    if (!this.instance) {
-      this.instance = new this(...args)
-    }
-    return this.instance
-  }
-  private static instance: TextImage
 
   private defaultOptions: Options = {
     fontSize: 30,
@@ -69,14 +71,16 @@ export default class TextImage {
 
   private ctx: CanvasRenderingContext2D
 
-  public constructor(options?: PartialOptions) {
+  public constructor(options?: Partial<Options>) {
     this.c = document.createElement('canvas')
     this.ctx = this.c.getContext('2d') as CanvasRenderingContext2D
 
     this.setDefaultOptions(options)
   }
 
-  public setDefaultOptions(options: PartialOptions = {}) {
+  public setDefaultOptions(options?: Partial<Options>) {
+    if (!options) return
+
     Object.assign(this.currentOptions, options)
   }
 
@@ -84,7 +88,7 @@ export default class TextImage {
     this.currentOptions = { ...this.defaultOptions }
   }
 
-  public setImage(imgUrl?: string): Promise<HTMLImageElement> {
+  public setImage(imgUrl?: string) {
     return new Promise((resolve, reject) => {
       if (!imgUrl || !isSrc(imgUrl)) {
         this.image = null
@@ -102,14 +106,16 @@ export default class TextImage {
       const img = new Image()
       img.onload = () => {
         this.image = img
-        resolve(img)
+        resolve()
       }
+
       img.onerror = reject
+
       img.src = imgUrl
     })
   }
 
-  public toDataURL(text: string | PartialOptions) {
+  public toDataURL(text: string | Partial<Options>) {
     this.options = {
       ...this.currentOptions,
       ...this.parseOptions(text)
@@ -123,7 +129,7 @@ export default class TextImage {
     return this.c.toDataURL(this.options.type, this.options.quality)
   }
 
-  public createURL(text: string | PartialOptions): Promise<string> {
+  public createURL(text: string | Partial<Options>): Promise<string> {
     return new Promise(resolve => {
       this.options = {
         ...this.currentOptions,
@@ -149,8 +155,10 @@ export default class TextImage {
     return URL.revokeObjectURL(url)
   }
 
-  private parseOptions(text: string | PartialOptions): PartialOptions {
-    return isObj(text) ? text : { text }
+  private parseOptions(text: string | Partial<Options>): Partial<Options> {
+    const options = (isObj(text) ? text : { text }) as Partial<Options>
+
+    return options
   }
 
   private drawImage() {
