@@ -1,4 +1,4 @@
-import { isObj, isSrc } from './utils'
+import { isObj, isSrc } from './util'
 
 interface Options {
   fontSize: number
@@ -11,9 +11,6 @@ interface Options {
   gradient?: [number, string][]
 }
 
-/**
- * @description convert text to image by canvas
- */
 export default class Text2image {
   private static instance: Text2image
 
