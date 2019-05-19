@@ -2,25 +2,48 @@
   "name": "@xg4/text2image",
   "version": "0.1.2",
   "description": "convert text to image by canvas",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "browser": "dist/index.umd.js",
-  "typings": "dist/types/index.d.ts",
-  "types": "dist/types/index.d.ts",
+  "keywords": [
+    "URL",
+    "canvas",
+    "convert",
+    "image",
+    "text"
+  ],
+  "homepage": "https://github.com/xg4/text2image#readme",
+  "bugs": {
+    "url": "https://github.com/xg4/text2image/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xg4/text2image.git"
+  },
+  "license": "MIT",
+  "author": "xg4 <xingor4@gmail.com>",
   "files": [
     "dist"
   ],
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.umd.js",
+  "types": "dist/types/index.d.ts",
+  "typings": "dist/types/index.d.ts",
   "scripts": {
-    "dev": "rollup -c -w",
-    "lint": "tslint src/**/*.{ts,tsx} ",
+    "prebuild": "npm run clean",
+    "build": "npm run build:types && npm run build:js",
+    "build:js": "rollup -c",
+    "build:types": "tsc --emitDeclarationOnly",
+    "clean": "rimraf dist",
+    "lint": "eslint --ext .ts,.js --ignore-path .gitignore . --fix",
+    "prepublish": "npm run build",
+    "postpublish": "git push && git push --tags",
+    "start": "rollup -c -w",
+    "pretest": "npm run lint",
+    "test": "jest",
+    "test:cov": "npm run test -- --coverage",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
-    "build:types": "tsc --emitDeclarationOnly",
-    "build:js": "rollup -c",
-    "build": "rimraf dist && npm run build:types && npm run build:js",
-    "release:commit": "cross-var git commit -am \"v\"$npm_package_version",
-    "release:tag": "cross-var git tag \"v\"$npm_package_version -m \"build: release \"$npm_package_version",
-    "release": "npm run release:commit && npm run release:tag && git push --follow-tags"
+    "preversion": "npm run test",
+    "postversion": "npm publish"
   },
   "husky": {
     "hooks": {
@@ -28,45 +51,43 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "tslint",
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{json,md,yml}": [
+      "prettier --write",
       "git add"
     ]
   },
-  "keywords": [
-    "text",
-    "image",
-    "convert",
-    "canvas",
-    "URL"
-  ],
-  "author": "xg4 <xingor4@gmail.com>",
-  "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
-    "@babel/preset-env": "^7.4.3",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
     "@babel/preset-typescript": "^7.3.3",
-    "husky": "^1.3.1",
-    "lint-staged": "^8.1.4",
+    "@types/jest": "^24.0.13",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.2.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jest": "^22.5.1",
+    "eslint-plugin-node": "^9.0.1",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^2.2.0",
+    "jest": "^24.8.0",
+    "lint-staged": "^8.1.6",
+    "prettier": "^1.17.1",
     "rimraf": "^2.6.3",
-    "rollup": "^1.1.2",
+    "rollup": "^1.11.3",
     "rollup-plugin-babel": "^4.3.2",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-commonjs": "^9.3.4",
+    "rollup-plugin-node-resolve": "^4.2.4",
     "rollup-plugin-terser": "^4.0.4",
-    "tslint": "^5.12.1",
-    "typescript": "^3.3.3"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/xg4/text2image.git"
-  },
-  "bugs": {
-    "url": "https://github.com/xg4/text2image/issues"
-  },
-  "homepage": "https://github.com/xg4/text2image#readme",
-  "publishConfig": {
-    "access": "public"
+    "typescript": "^3.4.5"
   }
 }

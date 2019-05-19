@@ -18,7 +18,7 @@ export default {
       format: 'es'
     },
     {
-      name: 'TextImage',
+      name: 'text2image',
       file: pkg.browser,
       format: 'umd'
     }
@@ -28,7 +28,7 @@ export default {
     commonjs(),
     babel({
       extensions,
-      exclude: 'node_modules/**'
+      include: ['src/**/*']
     }),
     terser()
   ]
