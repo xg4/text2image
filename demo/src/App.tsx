@@ -1,9 +1,9 @@
 import React from 'react'
 import './App.css'
-import TextImage from '../../src'
+import Text2Image from '../../src'
 
 export default class App extends React.Component {
-  public ti: TextImage
+  public ti: Text2Image
 
   public state = {
     text: '',
@@ -15,7 +15,7 @@ export default class App extends React.Component {
   }
 
   public componentDidMount() {
-    this.ti = new TextImage({
+    this.ti = new Text2Image({
       text: this.state.text,
       fontSize: this.state.size,
       color: this.state.color
@@ -77,18 +77,15 @@ export default class App extends React.Component {
           const reader = new FileReader()
           reader.readAsDataURL(file)
           reader.onload = () => {
-            this.ti.setImage(reader.result as string).then(() => {
+            Text2Image.createMask(reader.result as string).then(image => {
+              this.ti.setMask(image)
               this.setState({
                 btnLoading: false
               })
             })
           }
         } else {
-          this.ti.setImage().then(() => {
-            this.setState({
-              btnLoading: false
-            })
-          })
+          this.ti.setMask()
         }
       }
     )

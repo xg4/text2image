@@ -1,4 +1,4 @@
-import { isObj, isSrc } from './utils'
+import { isObj } from './utils'
 
 interface Options {
   fontSize: number
@@ -11,6 +11,16 @@ interface Options {
   gradient?: [number, string][]
 }
 
+const defaultOptions: Options = {
+  fontSize: 30,
+  color: '#000000',
+  fontFamily: 'Arial',
+  fontWeight: 'normal',
+  type: 'image/png',
+  quality: 0.92,
+  text: ''
+}
+
 export default class Text2image {
   private static instance: Text2image
 
@@ -20,6 +30,17 @@ export default class Text2image {
     }
     this.instance.setDefaultOptions(options)
     return this.instance
+  }
+
+  public static createMask(url: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const image = new Image()
+      image.onload = () => {
+        resolve(image)
+      }
+      image.onerror = reject
+      image.src = url
+    })
   }
 
   public get width() {
@@ -38,11 +59,9 @@ export default class Text2image {
 
   private defaultOptions: Options
 
-  private currentOptions: Options
-
   private options: Options
 
-  private image?: HTMLImageElement | null
+  private mask: HTMLImageElement | null
 
   private c: HTMLCanvasElement
 
@@ -52,90 +71,50 @@ export default class Text2image {
     this.c = document.createElement('canvas')
     this.ctx = this.c.getContext('2d') as CanvasRenderingContext2D
 
-    this.defaultOptions = {
-      fontSize: 30,
-      color: '#000000',
-      fontFamily: 'Arial',
-      fontWeight: 'normal',
-      type: 'image/png',
-      quality: 0.92,
-      text: ''
-    }
+    this.mask = null
 
-    this.currentOptions = {
-      ...this.defaultOptions
+    this.defaultOptions = {
+      ...defaultOptions
     }
 
     this.options = {
-      ...this.defaultOptions
+      ...defaultOptions
     }
 
     this.setDefaultOptions(options)
   }
 
   public setDefaultOptions(options?: Partial<Options>) {
-    Object.assign(this.currentOptions, options)
+    Object.assign(this.defaultOptions, options)
   }
 
   public resetDefaultOptions() {
-    this.currentOptions = { ...this.defaultOptions }
+    this.defaultOptions = { ...defaultOptions }
   }
 
-  public setImage(imgUrl?: string) {
-    return new Promise((resolve, reject) => {
-      if (!imgUrl || !isSrc(imgUrl)) {
-        this.image = null
-        resolve()
-        return
-      }
-
-      if (this.image && this.image.src === imgUrl) {
-        resolve()
-        return
-      }
-
-      this.image = null
-
-      const img = new Image()
-      img.onload = () => {
-        this.image = img
-        resolve()
-      }
-
-      img.onerror = reject
-
-      img.src = imgUrl
-    })
+  public setMask(image?: HTMLImageElement) {
+    this.mask = image || null
   }
 
   public toDataURL(text: string | Partial<Options>) {
     this.options = {
-      ...this.currentOptions,
+      ...this.defaultOptions,
       ...this.parseOptions(text)
     }
 
     this.draw()
 
-    if (!this.width || !this.height) {
-      return null
-    }
     return this.c.toDataURL(this.options.type, this.options.quality)
   }
 
   public createURL(text: string | Partial<Options>): Promise<string> {
     return new Promise(resolve => {
       this.options = {
-        ...this.currentOptions,
+        ...this.defaultOptions,
         ...this.parseOptions(text)
       }
 
       this.draw()
-
-      if (!this.width || !this.height) {
-        throw new TypeError(
-          `Invalid width or height, width:${this.width} height:${this.height}`
-        )
-      }
 
       this.c.toBlob(
         blob => {
@@ -155,20 +134,25 @@ export default class Text2image {
     return isObj<Partial<Options>>(text) ? text : { text }
   }
 
-  private drawImage() {
-    if (!this.image) {
+  private drawMask() {
+    if (!this.mask) {
       return
     }
 
     this.ctx.save()
-    const width = this.image.width
-    const height = this.image.height
+    const { width: w, height: h } = this
+    const { width: mw, height: mh } = this.mask
+
+    const scale = h / mh
+    const computedHeight = Math.min(h, mh)
+    const computedWidth = mw * scale
+
     this.ctx.drawImage(
-      this.image,
-      this.width / 2 - width / 2,
-      this.height / 2 - height / 2,
-      width,
-      height
+      this.mask,
+      w / 2 - computedWidth / 2,
+      h / 2 - computedHeight / 2,
+      computedWidth,
+      computedHeight
     )
     this.ctx.restore()
   }
@@ -209,8 +193,14 @@ export default class Text2image {
     this.c.height = this.options.fontSize
     this.c.width = this.getTextWidth()
 
+    if (!this.width || !this.height) {
+      throw new TypeError(
+        `Invalid width or height, width:${this.width} height:${this.height}`
+      )
+    }
+
     // draw
-    this.drawImage()
+    this.drawMask()
     this.drawText()
   }
 }
