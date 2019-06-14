@@ -1,4 +1,5 @@
 import { isObj } from './utils'
+import './polyfill'
 
 interface Options {
   fontSize: number
