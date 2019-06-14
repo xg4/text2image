@@ -12,7 +12,8 @@ module.exports = {
     'plugin:jest/recommended',
     'plugin:prettier/recommended',
     'prettier/@typescript-eslint',
-    'prettier/standard'
+    'prettier/standard',
+    'plugin:react/recommended'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -23,7 +24,7 @@ module.exports = {
     },
     project: './tsconfig.json'
   },
-  plugins: ['@typescript-eslint', 'standard', 'jest', 'prettier'],
+  plugins: ['@typescript-eslint', 'standard', 'jest', 'prettier', 'react'],
   rules: {
     'no-console': process.env.NODE_ENV !== 'production' ? 0 : 2,
     '@typescript-eslint/explicit-function-return-type': 0

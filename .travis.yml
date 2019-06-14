@@ -11,11 +11,11 @@ after_success:
   - npx codecov
 
 before_deploy:
-  - cd ./examples && yarn && npm run build
+  - cd ./demo && yarn && npm run build
 
 deploy:
   - provider: pages
-    local_dir: ./examples/dist
+    local_dir: ./demo/dist
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
     keep_history: true

@@ -1,4 +1,4 @@
-import { isSrc, isObj } from '../src/util'
+import { isSrc, isObj } from '../src/utils'
 
 test('util: is-obj', () => {
   expect(isObj({ a: 1 })).toBeTruthy()

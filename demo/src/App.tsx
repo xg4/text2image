@@ -1,5 +1,6 @@
 import React from 'react'
-import TextImage from '../src'
+import './App.css'
+import TextImage from '../../src'
 
 export default class App extends React.Component {
   public ti: TextImage
@@ -10,14 +11,14 @@ export default class App extends React.Component {
     color: '#000000',
     img: '',
     btnLoading: false,
-    weight: 500,
+    weight: 500
   }
 
   public componentDidMount() {
     this.ti = new TextImage({
       text: this.state.text,
       fontSize: this.state.size,
-      color: this.state.color,
+      color: this.state.color
     })
   }
 
@@ -29,7 +30,7 @@ export default class App extends React.Component {
     const { type, name } = target
     const value = type === 'checkbox' ? target.checked : target.value
     this.setState({
-      [name]: value,
+      [name]: value
     })
   }
 
@@ -41,7 +42,7 @@ export default class App extends React.Component {
       text: this.state.text,
       fontSize: this.state.size,
       color: this.state.color,
-      fontWeight: this.state.weight,
+      fontWeight: this.state.weight
     })
     document.body.appendChild(img)
   }
@@ -53,9 +54,9 @@ export default class App extends React.Component {
         fontSize: this.state.size,
         color: this.state.color,
         fontWeight: this.state.weight,
-        gradient: [[0, '#f12929'], [1, '#ff502f']],
+        gradient: [[0, '#f12929'], [1, '#ff502f']]
       })
-      .then((url) => {
+      .then(url => {
         const img = new Image()
         img.onload = () => {
           // this.ti.destroyURL(img.src)
@@ -69,7 +70,7 @@ export default class App extends React.Component {
     const file = target.files[0]
     this.setState(
       {
-        btnLoading: true,
+        btnLoading: true
       },
       () => {
         if (file) {
@@ -78,18 +79,18 @@ export default class App extends React.Component {
           reader.onload = () => {
             this.ti.setImage(reader.result as string).then(() => {
               this.setState({
-                btnLoading: false,
+                btnLoading: false
               })
             })
           }
         } else {
           this.ti.setImage().then(() => {
             this.setState({
-              btnLoading: false,
+              btnLoading: false
             })
           })
         }
-      },
+      }
     )
   }
 
