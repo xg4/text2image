@@ -44,23 +44,11 @@ export default class Text2image {
     }`
   }
 
-  private defaultOptions: Options = {
-    fontSize: 30,
-    color: '#000000',
-    fontFamily: 'Arial',
-    fontWeight: 'normal',
-    type: 'image/png',
-    quality: 0.92,
-    text: ''
-  }
+  private defaultOptions: Options
 
-  private currentOptions: Options = {
-    ...this.defaultOptions
-  }
+  private currentOptions: Options
 
-  private options: Options = {
-    ...this.defaultOptions
-  }
+  private options: Options
 
   private image?: HTMLImageElement | null
 
@@ -71,6 +59,24 @@ export default class Text2image {
   public constructor(options?: Partial<Options>) {
     this.c = document.createElement('canvas')
     this.ctx = this.c.getContext('2d') as CanvasRenderingContext2D
+
+    this.defaultOptions = {
+      fontSize: 30,
+      color: '#000000',
+      fontFamily: 'Arial',
+      fontWeight: 'normal',
+      type: 'image/png',
+      quality: 0.92,
+      text: ''
+    }
+
+    this.currentOptions = {
+      ...this.defaultOptions
+    }
+
+    this.options = {
+      ...this.defaultOptions
+    }
 
     this.setDefaultOptions(options)
   }
