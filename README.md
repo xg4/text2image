@@ -1,7 +1,7 @@
 # text2image
 
 [![Build Status](https://www.travis-ci.com/xg4/text2image.svg?branch=master)](https://www.travis-ci.com/xg4/text2image)
-[![npm](https://img.shields.io/npm/v/@xg4/text2image.svg?color=blue)](https://www.npmjs.com/package/@xg4/text2image)
+[![npm](https://img.shields.io/npm/v/@xg4/text2image.svg)](https://www.npmjs.com/package/@xg4/text2image)
 [![npm](https://img.shields.io/npm/l/@xg4/text2image.svg)](https://www.npmjs.com/package/@xg4/text2image)
 
 > convert text to image by canvas
@@ -23,12 +23,12 @@ $ yarn add @xg4/text2image
 ## Usage
 
 ```js
-import TextImage from '@xg4/text2image'
+import Text2Image from '@xg4/text2image'
 
-const ti = new TextImage()
+const ti = new Text2Image()
 // or
 // initialization default options
-const ti = new TextImage({
+const ti = new Text2Image({
   fontSize: 13,
   color: '#000000',
   fontFamily: 'arial',
@@ -39,8 +39,11 @@ const ti = new TextImage({
 ```
 
 ```js
-// set background image or not
-await ti.setImage(imgUrl)
+// get mask image
+Text2Image.createMask(imgUrl).then(image => {
+  // set background image
+  ti.setMask(image)
+})
 
 // create object url
 const url = ti.createURL('hello world')
@@ -61,8 +64,11 @@ document.body.appendChild(img)
 ```
 
 ```js
-// set background image or not
-await ti.setImage(imgUrl)
+// get mask image
+Text2Image.createMask(imgUrl).then(image => {
+  // set background image
+  ti.setMask(image)
+})
 
 // create data url
 const url = ti.toDataURL('hello world')
@@ -86,7 +92,7 @@ document.body.appendChild(img)
 
 ### Constructor Options
 
-> default options
+> options
 
 | name         | type             | default     | description          |
 | ------------ | ---------------- | ----------- | -------------------- |
@@ -107,6 +113,14 @@ ti.setDefaultOptions({
 // reset default options
 ti.resetDefaultOptions()
 ```
+
+## Contributing
+
+Welcome
+
+- Fork it
+
+- Submit pull request
 
 ## Polyfills needed to support older browsers
 
