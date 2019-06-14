@@ -26,16 +26,8 @@ export default class Text2image {
     return this.c.width
   }
 
-  public set width(value) {
-    this.c.width = value
-  }
-
   public get height() {
     return this.c.height
-  }
-
-  public set height(value) {
-    this.c.height = value
   }
 
   public get font() {
@@ -82,8 +74,6 @@ export default class Text2image {
   }
 
   public setDefaultOptions(options?: Partial<Options>) {
-    if (!options) return
-
     Object.assign(this.currentOptions, options)
   }
 
@@ -126,8 +116,8 @@ export default class Text2image {
 
     this.draw()
 
-    if (!(this.width && this.height)) {
-      return
+    if (!this.width || !this.height) {
+      return null
     }
     return this.c.toDataURL(this.options.type, this.options.quality)
   }
@@ -141,9 +131,12 @@ export default class Text2image {
 
       this.draw()
 
-      if (!(this.width && this.height)) {
-        return
+      if (!this.width || !this.height) {
+        throw new TypeError(
+          `Invalid width or height, width:${this.width} height:${this.height}`
+        )
       }
+
       this.c.toBlob(
         blob => {
           resolve(URL.createObjectURL(blob))
@@ -213,8 +206,8 @@ export default class Text2image {
     this.ctx.clearRect(0, 0, this.width, this.height)
 
     // computed image width/height
-    this.height = this.options.fontSize
-    this.width = this.getTextWidth()
+    this.c.height = this.options.fontSize
+    this.c.width = this.getTextWidth()
 
     // draw
     this.drawImage()
