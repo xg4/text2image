@@ -1,4 +1,4 @@
-import { isObj, isSrc } from './util'
+import { isObj, isSrc } from './utils'
 
 interface Options {
   fontSize: number
@@ -158,10 +158,8 @@ export default class Text2image {
     return URL.revokeObjectURL(url)
   }
 
-  private parseOptions(text: string | Partial<Options>): Partial<Options> {
-    const options = (isObj(text) ? text : { text }) as Partial<Options>
-
-    return options
+  private parseOptions(text: string | Partial<Options>) {
+    return isObj<Partial<Options>>(text) ? text : { text }
   }
 
   private drawImage() {
