@@ -1,8 +1,12 @@
 img[src^='data'] {
-  border: 1px solid #f00;
+  border: 1px solid #888;
 }
 img[src^='blob'] {
-  border: 1px solid #0f0;
+  border: 1px solid #888;
+}
+
+img {
+  margin: 10px;
 }
 
 .control {

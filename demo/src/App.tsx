@@ -97,7 +97,7 @@ export default class App extends React.Component {
     return (
       <div className="control">
         <div className="control-group">
-          <span className="control-label">image content:</span>
+          <span className="control-label">内容（image content）:</span>
           <div className="control-inner">
             <input
               type="text"
@@ -108,7 +108,7 @@ export default class App extends React.Component {
           </div>
         </div>
         <div className="control-group">
-          <span className="control-label"> font size:</span>
+          <span className="control-label">字体大小（font size）:</span>
           <div className="control-inner">
             <input
               type="range"
@@ -120,7 +120,7 @@ export default class App extends React.Component {
           </div>
         </div>
         <div className="control-group">
-          <span className="control-label">weight:</span>
+          <span className="control-label">字体粗细（font weight）:</span>
           <div className="control-inner">
             <input
               type="range"
@@ -134,7 +134,7 @@ export default class App extends React.Component {
           </div>
         </div>
         <div className="control-group">
-          <span className="control-label">color:</span>
+          <span className="control-label">字体颜色（color）:</span>
           <div className="control-inner">
             <input
               type="color"
@@ -146,17 +146,17 @@ export default class App extends React.Component {
           </div>
         </div>
         <div className="control-group">
-          <span className="control-label">background image:</span>
+          <span className="control-label">水印图片（mask image）:</span>
           <div className="control-inner">
             <input type="file" onChange={this.handleUpload} />
           </div>
         </div>
         <div className="control-group">
           <button disabled={btnLoading} onClick={this.handleGenerateA}>
-            generrate(object url)
+            生成(object url)
           </button>
           <button disabled={btnLoading} onClick={this.handleGenerateB}>
-            generrate(data url)
+            生成(data url)
           </button>
         </div>
       </div>
