@@ -1,7 +1,7 @@
 import { isObj } from './utils'
 
 interface Options {
-  fontSize: number
+  fontSize: number | string
   color: string
   fontFamily: string
   fontWeight: string | number
@@ -9,16 +9,18 @@ interface Options {
   quality: number
   text: string
   gradient?: [number, string][]
+  alpha: number
 }
 
 const defaultOptions: Options = {
-  fontSize: 30,
+  fontSize: '30px',
   color: '#000000',
   fontFamily: 'Arial',
   fontWeight: 'normal',
   type: 'image/png',
   quality: 0.92,
-  text: ''
+  text: '',
+  alpha: 0.3
 }
 
 export default class Text2image {
@@ -52,7 +54,7 @@ export default class Text2image {
   }
 
   public get font() {
-    return `${this.options.fontWeight} ${this.options.fontSize}px ${
+    return `${this.options.fontWeight} ${this.options.fontSize} ${
       this.options.fontFamily
     }`
   }
@@ -147,6 +149,7 @@ export default class Text2image {
     const computedHeight = Math.min(h, mh)
     const computedWidth = mw * scale
 
+    this.ctx.globalAlpha = this.options.alpha
     this.ctx.drawImage(
       this.mask,
       w / 2 - computedWidth / 2,
@@ -177,21 +180,23 @@ export default class Text2image {
     this.ctx.restore()
   }
 
-  private getTextWidth() {
+  // 计算文字的宽高
+  private measureText() {
     this.ctx.save()
     this.ctx.font = this.font
     const width = this.ctx.measureText(this.options.text).width
     this.ctx.restore()
-    return width
+    return {
+      width,
+      height: +this.options.fontSize.toString().replace(/\D/g, '')
+    }
   }
 
   private draw() {
-    // clear
+    const { width, height } = this.measureText()
+    this.c.height = height
+    this.c.width = width
     this.ctx.clearRect(0, 0, this.width, this.height)
-
-    // computed image width/height
-    this.c.height = this.options.fontSize
-    this.c.width = this.getTextWidth()
 
     if (!this.width || !this.height) {
       throw new TypeError(
@@ -200,7 +205,8 @@ export default class Text2image {
     }
 
     // draw
-    this.drawMask()
     this.drawText()
+
+    this.drawMask()
   }
 }
