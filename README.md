@@ -94,15 +94,16 @@ document.body.appendChild(img)
 
 > options
 
-| name         | type             | default     | description          |
-| ------------ | ---------------- | ----------- | -------------------- |
-| `text`       | `string`         | `null`      | image content        |
-| `fontSize`   | `number\|string` | `30`        | font size            |
-| `fontWeight` | `number\|string` | `normal`    | font weight          |
-| `fontFamily` | `string`         | `arial`     | font family          |
-| `color`      | `string`         | `#000000`   | font color           |
-| `type`       | `string`         | `image/png` | export image type    |
-| `quality`    | `number`         | `0.92`      | export image quality |
+| name         | type             | default     | description                  |
+| ------------ | ---------------- | ----------- | ---------------------------- |
+| `text`       | `string`         | `null`      | image content                |
+| `fontSize`   | `number\|string` | `30`        | font size(like css)          |
+| `fontWeight` | `number\|string` | `normal`    | font weight(like css)        |
+| `fontFamily` | `string`         | `arial`     | font family(like css)        |
+| `color`      | `string`         | `#000000`   | font color(like css)         |
+| `type`       | `string`         | `image/png` | image type                   |
+| `quality`    | `number`         | `0.92`      | image quality                |
+| `alpha`      | `number`         | `0.3`       | mask alpha(水印图片的透明度) |
 
 ```js
 // use current options convert default options
