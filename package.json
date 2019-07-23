@@ -1,6 +1,6 @@
 {
   "name": "@xg4/text2image",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "convert text to image by canvas",
   "keywords": [
     "URL",
