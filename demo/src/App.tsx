@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import './App.css'
 import Text2Image from '../../src'
 
+const tx = new Text2Image()
+
 const App = () => {
   const [text, setText] = useState('')
   const [size, setSize] = useState(20)
@@ -9,9 +11,9 @@ const App = () => {
   const [color, setColor] = useState('#000000')
   const [loading, setLoading] = useState(false)
 
-  const tx = new Text2Image({
+  tx.setDefaultOptions({
     text: text,
-    fontSize: size,
+    fontSize: size + 'px',
     color: color
   })
 
@@ -19,7 +21,7 @@ const App = () => {
     console.log(tx)
     tx.createURL({
       text: text,
-      fontSize: size,
+      fontSize: size + 'px',
       color: color,
       fontWeight: weight,
       gradient: [[0, '#f12929'], [1, '#ff502f']]
@@ -57,7 +59,7 @@ const App = () => {
     const img = new Image()
     img.src = tx.toDataURL({
       text: text,
-      fontSize: size,
+      fontSize: size + 'px',
       color: color,
       fontWeight: weight
     })
