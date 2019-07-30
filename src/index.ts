@@ -54,9 +54,7 @@ export default class Text2image {
   }
 
   public get font() {
-    return `${this.options.fontWeight} ${this.options.fontSize} ${
-      this.options.fontFamily
-    }`
+    return `${this.options.fontWeight} ${this.options.fontSize} ${this.options.fontFamily}`
   }
 
   private defaultOptions: Options
@@ -174,8 +172,9 @@ export default class Text2image {
     }
 
     this.ctx.font = this.font
+    this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
-    this.ctx.translate(0, this.height / 2)
+    this.ctx.translate(this.width / 2, this.height / 2 + this.height * 0.08)
     this.ctx.fillText(this.options.text, 0, 0)
     this.ctx.restore()
   }
