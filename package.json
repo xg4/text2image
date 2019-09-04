@@ -34,7 +34,7 @@
     "build:js": "rollup -c",
     "build:types": "tsc --emitDeclarationOnly",
     "clean": "rimraf dist",
-    "lint": "eslint --ext .ts,.js --ignore-path .gitignore . --fix",
+    "lint": "eslint src/**/* --fix",
     "prepublishOnly": "npm run build",
     "postpublish": "git push && git push --tags",
     "release:major": "npm version major -m \"build: release v%s\" ",
