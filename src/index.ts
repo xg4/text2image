@@ -22,27 +22,6 @@ const defaultOptions: Options = {
 }
 
 export default class Text2Image {
-  private static instance: Text2Image
-
-  static create(options?: Partial<Options>) {
-    if (!this.instance) {
-      this.instance = new this(options)
-    }
-    this.instance.setDefaultOptions(options)
-    return this.instance
-  }
-
-  static createMask(url: string): Promise<HTMLImageElement> {
-    return new Promise((resolve, reject) => {
-      const image = new Image()
-      image.onload = () => {
-        resolve(image)
-      }
-      image.onerror = reject
-      image.src = url
-    })
-  }
-
   get width() {
     return this.c.width
   }
@@ -97,6 +76,19 @@ export default class Text2Image {
 
   setMask(image?: HTMLImageElement) {
     this.mask = image || null
+  }
+
+  async loadImage(url: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const image = new Image()
+      image.crossOrigin = 'anonymous'
+      image.onload = () => {
+        this.setMask(image)
+        resolve(image)
+      }
+      image.onerror = reject
+      image.src = url
+    })
   }
 
   toDataURL(text: string | Partial<Options>) {
