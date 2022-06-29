@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import './App.css'
+import { useState } from 'react'
 import Text2Image from '../../src'
+import './App.css'
 
 const tx = new Text2Image()
 
-const App = () => {
+export default function App() {
   const [text, setText] = useState('')
   const [size, setSize] = useState(20)
   const [weight, setWeight] = useState(500)
@@ -14,7 +14,7 @@ const App = () => {
   tx.setDefaultOptions({
     text: text,
     fontSize: size + 'px',
-    color: color
+    color: color,
   })
 
   const handleBlob = () => {
@@ -24,8 +24,11 @@ const App = () => {
       fontSize: size + 'px',
       color: color,
       fontWeight: weight,
-      gradient: [[0, '#f12929'], [1, '#ff502f']]
-    }).then(url => {
+      gradient: [
+        [0, '#f12929'],
+        [1, '#ff502f'],
+      ],
+    }).then((url) => {
       const img = new Image()
       img.onload = () => {
         // tx.destroyURL(img.src)
@@ -35,15 +38,17 @@ const App = () => {
     })
   }
 
-  const handleUpload = ({ target }) => {
-    const file = target.files[0]
+  const handleUpload: React.ChangeEventHandler<HTMLInputElement> = ({
+    target,
+  }) => {
+    const file = target.files && target.files[0]
 
     setLoading(true)
     if (file) {
       const reader = new FileReader()
       reader.readAsDataURL(file)
       reader.onload = () => {
-        Text2Image.createMask(reader.result as string).then(image => {
+        Text2Image.createMask(reader.result as string).then((image) => {
           tx.setMask(image)
           setLoading(false)
         })
@@ -61,7 +66,7 @@ const App = () => {
       text: text,
       fontSize: size + 'px',
       color: color,
-      fontWeight: weight
+      fontWeight: weight,
     })
     document.body.appendChild(img)
   }
@@ -139,5 +144,3 @@ const App = () => {
     </div>
   )
 }
-
-export default App
