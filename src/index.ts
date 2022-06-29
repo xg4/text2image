@@ -36,7 +36,7 @@ export class Text2Image {
 
   private defaultOptions: Options
 
-  private options: Options
+  private currentOptions: Partial<Options> | null
 
   private mask: HTMLImageElement | null
 
@@ -54,16 +54,17 @@ export class Text2Image {
     this.ctx = ctx
 
     this.mask = null
+    this.currentOptions = null
 
     this.defaultOptions = {
       ...defaultOptions,
     }
 
-    this.options = {
-      ...defaultOptions,
-    }
-
     this.setDefaultOptions(options)
+  }
+
+  get options(): Options {
+    return { ...this.defaultOptions, ...this.currentOptions }
   }
 
   setDefaultOptions(options?: Partial<Options>) {
@@ -91,22 +92,23 @@ export class Text2Image {
     })
   }
 
-  toDataURL(text: string | Partial<Options>) {
-    this.options = {
-      ...this.defaultOptions,
-      ...this.parseOptions(text),
+  toDataURL(text?: string | Partial<Options>) {
+    if (text) {
+      this.currentOptions = this.parseOptions(text)
     }
 
     this.draw()
 
-    return this.c.toDataURL(this.options.type, this.options.quality)
+    const result = this.c.toDataURL(this.options.type, this.options.quality)
+    this.currentOptions = null
+
+    return result
   }
 
-  createURL(text: string | Partial<Options>): Promise<string> {
+  createURL(text?: string | Partial<Options>): Promise<string> {
     return new Promise((resolve) => {
-      this.options = {
-        ...this.defaultOptions,
-        ...this.parseOptions(text),
+      if (text) {
+        this.currentOptions = this.parseOptions(text)
       }
 
       this.draw()
@@ -117,6 +119,7 @@ export class Text2Image {
             throw new Error('Failed to create blob')
           }
           resolve(URL.createObjectURL(blob))
+          this.currentOptions = null
         },
         this.options.type,
         this.options.quality
@@ -177,7 +180,6 @@ export class Text2Image {
     this.ctx.restore()
   }
 
-  // 计算文字的宽高
   private measureText() {
     this.ctx.save()
     this.ctx.font = this.font
@@ -190,6 +192,10 @@ export class Text2Image {
   }
 
   private draw() {
+    if (!this.options.text) {
+      throw new Error('Invalid text')
+    }
+
     const { width, height } = this.measureText()
     this.c.height = height
     this.c.width = width
