@@ -34,13 +34,13 @@ const ti = new Text2Image({
   fontFamily: 'arial',
   fontWeight: 'bold',
   type: 'image/png',
-  quality: 0.92
+  quality: 0.92,
 })
 ```
 
 ```js
 // get mask image
-Text2Image.createMask(imgUrl).then(image => {
+Text2Image.createMask(imgUrl).then((image) => {
   // set background image
   ti.setMask(image)
 })
@@ -49,13 +49,13 @@ Text2Image.createMask(imgUrl).then(image => {
 const url = ti.createURL('hello world')
 // or
 const url = ti.createURL({
-  text: 'hello world'
+  text: 'hello world',
   // some options
 })
 
 const img = new Image()
 // img loaded, remenber to destroy object url
-img.onload = function() {
+img.onload = function () {
   ti.destroyURL(this.src)
 }
 img.src = url
@@ -65,7 +65,7 @@ document.body.appendChild(img)
 
 ```js
 // get mask image
-Text2Image.createMask(imgUrl).then(image => {
+Text2Image.createMask(imgUrl).then((image) => {
   // set background image
   ti.setMask(image)
 })
@@ -74,7 +74,7 @@ Text2Image.createMask(imgUrl).then(image => {
 const url = ti.toDataURL('hello world')
 // or
 const url = ti.toDataURL({
-  text: 'hello world'
+  text: 'hello world',
   // some options
 })
 
@@ -128,10 +128,10 @@ Welcome
 > `HTMLCanvasElement.prototype.toBlob`: see [MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob#Polyfill) for details about unsupported older browsers and a simple polyfill.
 
 ```js
-;(function() {
+;(function () {
   if (!HTMLCanvasElement.prototype.toBlob) {
     Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
-      value: function(callback, type, quality) {
+      value: function (callback, type, quality) {
         var binStr = atob(this.toDataURL(type, quality).split(',')[1]),
           len = binStr.length,
           arr = new Uint8Array(len)
@@ -141,7 +141,7 @@ Welcome
         }
 
         callback(new Blob([arr], { type: type || 'image/png' }))
-      }
+      },
     })
   }
 })()
