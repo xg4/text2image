@@ -21,7 +21,7 @@ const defaultOptions: Options = {
   alpha: 0.3,
 }
 
-export default class Text2Image {
+export class Text2Image {
   get width() {
     return this.c.width
   }
@@ -207,3 +207,7 @@ export default class Text2Image {
     this.drawMask()
   }
 }
+
+const text2image = new Text2Image()
+
+export default text2image
