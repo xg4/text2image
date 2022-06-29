@@ -1,5 +1,3 @@
-import { isObj } from './utils'
-
 interface Options {
   fontSize: number | string
   color: string
@@ -20,13 +18,13 @@ const defaultOptions: Options = {
   type: 'image/png',
   quality: 0.92,
   text: '',
-  alpha: 0.3
+  alpha: 0.3,
 }
 
-export default class Text2image {
-  private static instance: Text2image
+export default class Text2Image {
+  private static instance: Text2Image
 
-  public static create(options?: Partial<Options>) {
+  static create(options?: Partial<Options>) {
     if (!this.instance) {
       this.instance = new this(options)
     }
@@ -34,7 +32,7 @@ export default class Text2image {
     return this.instance
   }
 
-  public static createMask(url: string): Promise<HTMLImageElement> {
+  static createMask(url: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       const image = new Image()
       image.onload = () => {
@@ -45,15 +43,15 @@ export default class Text2image {
     })
   }
 
-  public get width() {
+  get width() {
     return this.c.width
   }
 
-  public get height() {
+  get height() {
     return this.c.height
   }
 
-  public get font() {
+  get font() {
     return `${this.options.fontWeight} ${this.options.fontSize} ${this.options.fontFamily}`
   }
 
@@ -67,39 +65,44 @@ export default class Text2image {
 
   private ctx: CanvasRenderingContext2D
 
-  public constructor(options?: Partial<Options>) {
+  constructor(options?: Partial<Options>) {
     this.c = document.createElement('canvas')
-    this.ctx = this.c.getContext('2d') as CanvasRenderingContext2D
+    const ctx = this.c.getContext('2d')
+    if (!ctx) {
+      throw new Error('Failed to create canvas context')
+    }
+
+    this.ctx = ctx
 
     this.mask = null
 
     this.defaultOptions = {
-      ...defaultOptions
+      ...defaultOptions,
     }
 
     this.options = {
-      ...defaultOptions
+      ...defaultOptions,
     }
 
     this.setDefaultOptions(options)
   }
 
-  public setDefaultOptions(options?: Partial<Options>) {
+  setDefaultOptions(options?: Partial<Options>) {
     Object.assign(this.defaultOptions, options)
   }
 
-  public resetDefaultOptions() {
+  resetDefaultOptions() {
     this.defaultOptions = { ...defaultOptions }
   }
 
-  public setMask(image?: HTMLImageElement) {
+  setMask(image?: HTMLImageElement) {
     this.mask = image || null
   }
 
-  public toDataURL(text: string | Partial<Options>) {
+  toDataURL(text: string | Partial<Options>) {
     this.options = {
       ...this.defaultOptions,
-      ...this.parseOptions(text)
+      ...this.parseOptions(text),
     }
 
     this.draw()
@@ -107,17 +110,20 @@ export default class Text2image {
     return this.c.toDataURL(this.options.type, this.options.quality)
   }
 
-  public createURL(text: string | Partial<Options>): Promise<string> {
-    return new Promise(resolve => {
+  createURL(text: string | Partial<Options>): Promise<string> {
+    return new Promise((resolve) => {
       this.options = {
         ...this.defaultOptions,
-        ...this.parseOptions(text)
+        ...this.parseOptions(text),
       }
 
       this.draw()
 
       this.c.toBlob(
-        blob => {
+        (blob) => {
+          if (!blob) {
+            throw new Error('Failed to create blob')
+          }
           resolve(URL.createObjectURL(blob))
         },
         this.options.type,
@@ -126,12 +132,12 @@ export default class Text2image {
     })
   }
 
-  public destroyURL(url: string) {
+  destroyURL(url: string) {
     return URL.revokeObjectURL(url)
   }
 
-  private parseOptions(text: string | Partial<Options>) {
-    return isObj<Partial<Options>>(text) ? text : { text }
+  parseOptions(text: string | Partial<Options>): Partial<Options> {
+    return typeof text === 'string' ? { text } : text
   }
 
   private drawMask() {
@@ -163,7 +169,7 @@ export default class Text2image {
 
     if (this.options.gradient) {
       const gradient = this.ctx.createLinearGradient(0, 0, this.width, 0)
-      this.options.gradient.forEach(v => {
+      this.options.gradient.forEach((v) => {
         gradient.addColorStop(...v)
       })
       this.ctx.fillStyle = gradient
@@ -187,7 +193,7 @@ export default class Text2image {
     this.ctx.restore()
     return {
       width,
-      height: +this.options.fontSize.toString().replace(/\D/g, '')
+      height: +this.options.fontSize.toString().replace(/\D/g, ''),
     }
   }
 
