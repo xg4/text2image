@@ -24,26 +24,18 @@
   "module": "dist/index.esm.js",
   "browser": "dist/index.umd.js",
   "types": "dist/types/index.d.ts",
-  "typings": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "prebuild": "npm run clean",
-    "build": "npm run build:types && npm run build:js",
+    "build": "npm run clean && npm run build:types && npm run build:js",
     "build:js": "rollup -c",
     "build:types": "tsc --emitDeclarationOnly",
     "clean": "rimraf dist",
     "prepare": "husky install",
-    "prepublishOnly": "npm run build",
-    "postpublish": "git push && git push --tags",
-    "release:major": "npm version major -m \"build: release v%s\" ",
-    "release:minor": "npm version minor -m \"build: release v%s\" ",
-    "release:patch": "npm version patch -m \"build: release v%s\" ",
     "start": "rollup -c -w",
     "type-check": "tsc --noEmit",
-    "type-check:watch": "npm run type-check -- --watch",
-    "postversion": "npm publish"
+    "type-check:watch": "npm run type-check -- --watch"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -64,12 +56,19 @@
     "@rollup/plugin-babel": "5.3.1",
     "@rollup/plugin-commonjs": "22.0.1",
     "@rollup/plugin-node-resolve": "13.3.0",
+    "@semantic-release/changelog": "6.0.1",
+    "@semantic-release/commit-analyzer": "9.0.2",
+    "@semantic-release/git": "10.0.1",
+    "@semantic-release/github": "8.0.4",
+    "@semantic-release/npm": "9.0.1",
+    "@semantic-release/release-notes-generator": "10.0.3",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.75.7",
     "rollup-plugin-terser": "^7.0.2",
+    "semantic-release": "19.0.3",
     "typescript": "^4.7.4"
   }
 }
