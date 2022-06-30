@@ -16,19 +16,19 @@ export default function Control({
   onSubmit,
   title,
 }: {
-  onSubmit: (options: any) => Promise<string>
+  onSubmit: (options: any) => Promise<any>
   title: string
 }) {
-  const [images, setImages] = useState<string[]>([])
+  const [images, setImages] = useState<any[]>([])
 
   const handleSubmit = async (_options: any) => {
     const options = omitBy(_options, isNil)
 
-    const url = await onSubmit(options)
+    const image = await onSubmit(options)
 
     setImages(
       produce((draft) => {
-        draft.push(url)
+        draft.push(image)
         return draft
       })
     )
@@ -124,12 +124,25 @@ export default function Control({
         bordered
         header={<div className="font-bold text-lg">Showcase</div>}
       >
-        {images.map((url, index) => (
-          <List.Item key={index}>
-            <img src={url} alt="text" className="mr-5" />
-            <Typography.Link href={url} target="_blank" className="text-xs">
-              {url}
+        {images.map((image, index) => (
+          <List.Item
+            className="flex flex-wrap flex-col items-start gap-2"
+            key={index}
+          >
+            <img
+              className="border border-gray-700 border-solid"
+              src={image.url}
+              alt="text"
+            />
+            <Typography.Link
+              href={image.url}
+              target="_blank"
+              className="text-xs"
+            >
+              {image.url}
             </Typography.Link>
+
+            <Typography.Text code>{image.code}</Typography.Text>
           </List.Item>
         ))}
       </List>
