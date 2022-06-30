@@ -22,8 +22,18 @@ pnpm i @xg4/text2image
 
 ## Usage
 
+### Instance
+
 ```js
 import text2image, { Text2Image } from '@xg4/text2image'
+
+// use current options convert default options
+text2image.setDefaultOptions({
+  // some options
+})
+
+// reset default options
+text2image.resetDefaultOptions()
 
 // you can create new instance or use text2image singleton
 const t2 = new Text2Image()
@@ -37,6 +47,14 @@ const t2 = new Text2Image({
   type: 'image/png',
   quality: 0.92,
 })
+
+// use current options convert default options
+t2.setDefaultOptions({
+  // some options
+})
+
+// reset default options
+t2.resetDefaultOptions()
 ```
 
 ## Object URL
@@ -180,15 +198,7 @@ async function getTextImage() {
 getTextImage()
 ```
 
-## Example
-
-> [https://text-image.vercel.app/](https://text-image.vercel.app/)
-
-## API
-
-### Constructor Options
-
-> options
+## Options
 
 | name         | type             | default     | description                  |
 | ------------ | ---------------- | ----------- | ---------------------------- |
@@ -201,15 +211,9 @@ getTextImage()
 | `quality`    | `number`         | `0.92`      | image quality                |
 | `alpha`      | `number`         | `0.3`       | mask alpha(水印图片的透明度) |
 
-```js
-// use current options convert default options
-ti.setDefaultOptions({
-  // some options
-})
+## Example
 
-// reset default options
-ti.resetDefaultOptions()
-```
+> [https://text-image.vercel.app/](https://text-image.vercel.app/)
 
 ## Contributing
 
