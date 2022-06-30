@@ -1,6 +1,5 @@
 # text2image
 
-[![Build Status](https://www.travis-ci.com/xg4/text2image.svg?branch=master)](https://www.travis-ci.com/xg4/text2image)
 [![npm](https://img.shields.io/npm/v/@xg4/text2image.svg)](https://www.npmjs.com/package/@xg4/text2image)
 [![npm](https://img.shields.io/npm/l/@xg4/text2image.svg)](https://www.npmjs.com/package/@xg4/text2image)
 
@@ -10,25 +9,27 @@
 
 ### Install with npm or Yarn
 
-```bash
+```sh
 # npm
-$ npm install @xg4/text2image --save
-```
+npm i @xg4/text2image
 
-```bash
 # yarn
-$ yarn add @xg4/text2image
+yarn add @xg4/text2image
+
+# pnpm
+pnpm i @xg4/text2image
 ```
 
 ## Usage
 
 ```js
-import Text2Image from '@xg4/text2image'
+import text2image, { Text2Image } from '@xg4/text2image'
 
-const ti = new Text2Image()
+// you can create new instance or use text2image singleton
+const t2 = new Text2Image()
 // or
 // initialization default options
-const ti = new Text2Image({
+const t2 = new Text2Image({
   fontSize: 13,
   color: '#000000',
   fontFamily: 'arial',
@@ -38,55 +39,150 @@ const ti = new Text2Image({
 })
 ```
 
+## Object URL
+
+### js/html
+
 ```js
-// get mask image
-Text2Image.createMask(imgUrl).then((image) => {
-  // set background image
-  ti.setMask(image)
-})
-
-// create object url
-const url = ti.createURL('hello world')
-// or
-const url = ti.createURL({
-  text: 'hello world',
-  // some options
-})
-
-const img = new Image()
-// img loaded, remenber to destroy object url
-img.onload = function () {
-  ti.destroyURL(this.src)
+async function renderTextImage() {
+  const url = await text2image.createURL('hello world')
+  const img = new Image()
+  img.src = url
+  document.body.appendChild(img)
 }
-img.src = url
 
+renderTextImage()
+```
+
+### React
+
+```tsx
+import { useEffect, useState } from 'react'
+import text2image from '../../../src'
+
+export default function App() {
+  const [images, setImages] = useState<string[]>([])
+
+  useEffect(() => {
+    async function renderTextImage() {
+      const url = await text2image.createURL('Hello World')
+      setImages((urls) => [...urls, url])
+    }
+
+    renderTextImage()
+  }, [])
+
+  return (
+    <div>
+      {images.map((url, index) => (
+        <img
+          src={url}
+          key={index}
+          onLoad={() => {
+            // img loaded, should to destroy object url
+            text2image.destroyURL(url)
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+```
+
+### mask image
+
+```js
+async function renderTextImage() {
+  // get mask image
+  await text2image.loadImage(imgUrl)
+
+  // create object url
+  const url = await text2image.createURL('hello world')
+  // or
+  // const url = await text2image.createURL({
+  //   text: 'hello world',
+  //   // some options
+  // })
+
+  const img = new Image()
+  // img loaded, should to destroy object url
+  img.onload = () => {
+    text2image.destroyURL(url)
+  }
+  img.src = url
+
+  document.body.appendChild(img)
+}
+
+renderTextImage()
+```
+
+## DataURL
+
+### js/html
+
+```js
+const url = text2image.toDataURL('hello world')
+const img = new Image()
+img.src = url
 document.body.appendChild(img)
 ```
 
+### React
+
+```tsx
+import { useEffect, useState } from 'react'
+import text2image from '../../../src'
+
+export default function App() {
+  const [images, setImages] = useState<string[]>([])
+
+  useEffect(() => {
+    const url = text2image.toDataURL('Hello World')
+    // const url = text2image.toDataURL({
+    //   text: 'hello world',
+    //   // some options
+    // })
+    setImages((urls) => [...urls, url])
+  }, [])
+
+  return (
+    <div>
+      {images.map((url, index) => (
+        <img src={url} key={index} />
+      ))}
+    </div>
+  )
+}
+```
+
+### mask image
+
 ```js
-// get mask image
-Text2Image.createMask(imgUrl).then((image) => {
-  // set background image
-  ti.setMask(image)
-})
+async function getTextImage() {
+  // get mask image
+  await text2image.loadImage(imgUrl)
 
-// create data url
-const url = ti.toDataURL('hello world')
-// or
-const url = ti.toDataURL({
-  text: 'hello world',
-  // some options
-})
+  // create data url
+  const url = text2image.toDataURL('hello world')
+  // or
+  // const url = text2image.toDataURL({
+  //   text: 'hello world',
+  //   // some options
+  // })
 
-const img = new Image()
-img.src = url
+  const img = new Image()
+  img.src = url
 
-document.body.appendChild(img)
+  document.body.appendChild(img)
+}
+
+getTextImage()
 ```
 
 ## Example
 
-> [https://xg4.github.io/text2image](https://xg4.github.io/text2image)
+> [https://text-image.vercel.app/](https://text-image.vercel.app/)
 
 ## API
 
